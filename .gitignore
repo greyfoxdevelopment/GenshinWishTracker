@@ -1,0 +1,32 @@
+# User data safety - Never sync local user caches
+wish_history.json
+settings.json
+*.db
+*.log
+
+# Build outputs and compilation folders
+**/bin/
+**/obj/
+**/publish/
+*_wpftmp.csproj
+release-output/
+/setup-output/
+.publish-staging/
+/GenshinWishTracker.exe
+/WEB/
+[Dd]ebug/
+[Rr]elease/
+artifacts/
+GenshinWishTracker-Release/
+
+# Visual Studio specific files
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Operating System files
+Thumbs.db
+ehthumbs.db
+Desktop.ini

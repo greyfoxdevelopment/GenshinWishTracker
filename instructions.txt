@@ -1,0 +1,147 @@
+GENSHIN WISH TRACKER - INSTRUCTIONS
+==================================
+
+INSTALL THE APP
+---------------
+
+1. Download GenshinWishTrackerSetup.exe from the project's latest GitHub Release:
+   https://github.com/greyfoxdevelopment/GenshinWishTracker/releases/latest
+2. Run the installer. An internet connection is required.
+3. Review and accept the included MIT License.
+4. Choose an installation folder and whether to create a desktop shortcut.
+5. Select Install. The installer downloads the latest app and checks its SHA-256
+   checksum before placing it in the selected folder.
+
+The installer is a self-contained Windows x64 program. It does not require the
+.NET runtime to be installed. The app's Interactive Map feature requires the
+Microsoft Edge WebView2 Runtime, which is already present on most Windows PCs.
+
+FIRST-TIME WISH SYNC
+--------------------
+
+1. Launch Genshin Impact.
+2. Open Paimon Menu > Wish > History in the game and wait for the history page
+   to load. The game needs to write its wish link to its local web cache.
+3. Open Genshin Wish Tracker and select Sync Wishes.
+4. If the game cache cannot be found, use the folder button in the app to select
+   the Genshin Impact Game folder containing GenshinImpact_Data or YuanShen_Data.
+
+Wish links expire (typically after about 24 hours). If syncing reports an
+expired link, open Wish > History in-game again and retry. You can sync with the
+game running. The app reads the cache file without modifying it.
+
+USING THE APP
+-------------
+
+Wish dashboard
+  The dashboard shows wish totals and pity for Character Event, Weapon Event,
+  and Standard banners. Wish history is saved locally, so keep syncing
+  periodically; HoYoverse's wish-history API only provides a limited recent
+  history window.
+
+Primogem planner
+  Enter your primogems, fates, pity, and featured guarantee state to see an
+  estimated chance of obtaining a featured character. The estimate is not a
+  guarantee of an in-game result.
+
+Builds
+  Make a character showcase visible to other players in Genshin Impact. In the
+  Builds tab, enter the account's 9-digit UID and select Load Showcase. Only
+  characters in the public showcase are available; this does not show the
+  account's full character inventory. Enka responses are cached according to
+  the service's TTL.
+
+Resin & Daily
+  Open the tab and select Sign in to HoYoLAB. Sign in within the embedded page,
+  select Load accounts, choose the Genshin account if prompted, and select
+  Refresh notes. This feature currently supports global HoYoLAB accounts.
+
+Interactive Map
+  The map opens HoYoLAB's official Interactive Map in the app. Map features
+  depend on HoYoLAB and its embedded sign-in session.
+
+Window
+  Move or resize the window as needed. Use the pin control to keep the window
+  above other windows, for example while playing on another screen.
+
+DATA AND PRIVACY
+----------------
+
+Wish history and settings are stored on this PC:
+  %LOCALAPPDATA%\GenshinWishTracker\wish_history.json
+  %LOCALAPPDATA%\GenshinWishTracker\settings.json
+
+WebView2 stores the embedded browser profile under:
+  %LOCALAPPDATA%\GenshinWishTracker\WebView2
+
+The app reads the game's local cache to find the wish-history link. It does not
+interact with the game process. The wish link is held in memory during syncing
+and is not saved in wish history, settings, or logs. Treat the link as private:
+anyone who has it may be able to view wish history while the link is valid.
+
+Deleting the GenshinWishTracker folder under %LOCALAPPDATA% removes local app
+data, including saved wish history and settings. Back up wish_history.json
+first if you want to keep your history.
+
+TROUBLESHOOTING
+---------------
+
+Cache folder not found
+  Select the Genshin Impact Game folder using the folder button. It should
+  contain GenshinImpact_Data or YuanShen_Data.
+
+No wish URL found
+  Open Wish > History in the game, wait for it to finish loading, then sync
+  again.
+
+Wish link expired
+  Re-open Wish > History in the game and sync again. Wish links typically last
+  about 24 hours.
+
+Sync is slow or an API error appears
+  Check your internet connection and try again later. HoYoverse may rate-limit
+  requests; the app backs off and retries some requests.
+
+Build showcase is empty
+  Make sure the character showcase is populated and visible to other players.
+  Only public showcase characters are returned.
+
+App update fails
+  Check your internet connection and try again. The updater requires the
+  executable and matching SHA-256 checksum on the GitHub Release.
+
+DEVELOPMENT AND RELEASES
+------------------------
+
+Requirements
+  Windows 10 or 11 x64 and the .NET 8 SDK.
+
+Run from source
+  Run Scripts\build.bat, or use:
+  dotnet run --project src\GenshinWishTracker.csproj -c Release
+
+Publish the app executable
+  Run Scripts\publish.bat. The standalone executable is written to the
+  repository root; supporting publish files are placed in WEB.
+
+Create a GitHub release
+  1. Set the Version in src\GenshinWishTracker.csproj to the new version.
+  2. Push a Git tag whose name exactly matches that version, without a v prefix.
+     For example, for version 1.0.1:
+       git tag 1.0.1
+       git push origin 1.0.1
+  3. The Publish release GitHub Actions workflow builds the app and installer,
+     creates GenshinWishTracker.exe.sha256, and attaches all three files to the
+     GitHub Release.
+
+The installer project is in Setup. It downloads the app executable and checksum
+from the latest release, verifies the checksum, and installs the executable.
+The checksum detects accidental corruption or incomplete downloads; it does not
+protect against compromise of the GitHub account hosting the release.
+
+LICENSE AND TRADEMARK
+---------------------
+
+The project is provided under the MIT License in the LICENSE file. Genshin
+Impact is a trademark of HoYoverse (COGNOSPHERE). This project is unofficial
+and is not endorsed by HoYoverse.

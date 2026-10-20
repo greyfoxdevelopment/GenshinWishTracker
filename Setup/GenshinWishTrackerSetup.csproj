@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWindowsForms>true</UseWindowsForms>
+    <AssemblyName>GenshinWishTrackerSetup</AssemblyName>
+    <RootNamespace>GenshinWishTrackerSetup</RootNamespace>
+    <ApplicationIcon>..\src\Resources\gwt.ico</ApplicationIcon>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="..\LICENSE" LogicalName="GenshinWishTrackerSetup.LICENSE" />
+  </ItemGroup>
+
+</Project>

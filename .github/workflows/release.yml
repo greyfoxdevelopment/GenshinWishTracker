@@ -1,0 +1,60 @@
+name: Publish release
+
+on:
+  push:
+    tags:
+      - "*"
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: windows-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      # Tags must be plain versions ("1.0.1", no "v"): installed copies of v1.0.0 can only parse plain tags.
+      - name: Verify tag matches project version
+        shell: pwsh
+        run: |
+          [xml]$project = Get-Content src/GenshinWishTracker.csproj -Raw
+          $version = ($project.Project.PropertyGroup | ForEach-Object { $_.Version } | Where-Object { $_ } | Select-Object -First 1).Trim()
+          if ($env:GITHUB_REF_NAME -cne $version) {
+            throw "Tag '$env:GITHUB_REF_NAME' must exactly match the project Version '$version' (plain version, no 'v' prefix)."
+          }
+
+      - name: Publish self-contained executable
+        run: dotnet publish src/GenshinWishTracker.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -o release-output
+
+      # The in-app updater refuses to install a release without this file.
+      - name: Create SHA-256 checksum
+        shell: pwsh
+        run: |
+          $hash = (Get-FileHash release-output/GenshinWishTracker.exe -Algorithm SHA256).Hash.ToLowerInvariant()
+          "$hash  GenshinWishTracker.exe" | Set-Content -Path release-output/GenshinWishTracker.exe.sha256 -Encoding ascii
+          Get-Content release-output/GenshinWishTracker.exe.sha256
+
+      - name: Publish Windows installer
+        run: dotnet publish Setup/GenshinWishTrackerSetup.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -o setup-output
+
+      # Works whether the release already exists (made in the GitHub UI) or not.
+      - name: Create or update GitHub Release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $tag = $env:GITHUB_REF_NAME
+          $files = @("release-output/GenshinWishTracker.exe", "release-output/GenshinWishTracker.exe.sha256", "setup-output/GenshinWishTrackerSetup.exe")
+          gh release view $tag *> $null
+          if ($LASTEXITCODE -eq 0) {
+            gh release upload $tag @files --clobber
+          } else {
+            gh release create $tag @files --title $tag --generate-notes
+          }
