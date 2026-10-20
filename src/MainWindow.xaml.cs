@@ -28,15 +28,14 @@ public partial class MainWindow : Window
     private const int PageSize = 20;
     private const int DelayBetweenPagesMs = 350;
     private bool _mapInitializationStarted;
+    private bool _buildWebViewInitializationStarted;
     private bool _hoyolabInitializationStarted;
     private bool _hoyolabRequestRunning;
     private DateTimeOffset _lastHoyolabRequestUtc;
     private DateTimeOffset _lastHoyolabUpdateUtc;
     private HoyolabDailyNote? _dailyNote;
     private readonly DispatcherTimer _resinCountdownTimer = new() { Interval = TimeSpan.FromSeconds(30) };
-    private readonly DispatcherTimer _buildCooldownTimer = new() { Interval = TimeSpan.FromSeconds(1) };
-    private readonly Dictionary<string, DateTimeOffset> _buildNextRequestUtcByUid =
-        new(StringComparer.Ordinal);
+    private string? _buildProfileUrl;
 
     private static readonly HttpClient Http = CreateHttpClient();
 
@@ -100,7 +99,6 @@ public partial class MainWindow : Window
 
         UpdatePlanner();
         BuildUidInput.Text = _store.LastUid ?? "";
-        _buildCooldownTimer.Tick += BuildCooldownTimer_Tick;
         _resinCountdownTimer.Tick += (_, _) => RenderDailyNote();
         await CheckForUpdatesAsync();
     }
@@ -338,6 +336,8 @@ public partial class MainWindow : Window
         if (string.IsNullOrWhiteSpace(_store.LastUid))
         {
             BuildStatusText.Text = "No saved wish UID is available. Enter your public in-game UID.";
+            BuildStatusPanel.Visibility = Visibility.Visible;
+            BuildOpenBrowserButton.Visibility = Visibility.Collapsed;
             return;
         }
 
@@ -358,39 +358,42 @@ public partial class MainWindow : Window
         if (uid.Length != 9 || !uid.All(char.IsAsciiDigit))
         {
             BuildStatusText.Text = "Enter a valid 9-digit Genshin UID.";
-            BuildCharactersHost.ItemsSource = null;
-            return;
-        }
-
-        if (_buildNextRequestUtcByUid.TryGetValue(uid, out DateTimeOffset nextRequest) &&
-            nextRequest > DateTimeOffset.UtcNow)
-        {
-            BuildStatusText.Text = $"Please wait before requesting this UID again ({Math.Ceiling((nextRequest - DateTimeOffset.UtcNow).TotalSeconds)}s).";
+            BuildStatusPanel.Visibility = Visibility.Visible;
+            BuildOpenBrowserButton.Visibility = Visibility.Collapsed;
             return;
         }
 
         BuildLookupButton.IsEnabled = false;
-        BuildStatusText.Text = $"Looking up public showcase for UID {uid}…";
-        BuildCharactersHost.ItemsSource = null;
+        BuildStatusPanel.Visibility = Visibility.Visible;
+        BuildOpenBrowserButton.Visibility = Visibility.Collapsed;
+        BuildStatusText.Text = $"Loading Enka.Network showcase for UID {uid}…";
+        _buildProfileUrl = $"https://enka.network/u/{uid}/";
+
         try
         {
-            EnkaShowcase showcase = await EnkaService.GetShowcaseAsync(uid, AppDir);
-            _buildNextRequestUtcByUid[uid] = DateTimeOffset.UtcNow.AddSeconds(Math.Max(1, showcase.CacheSeconds));
-            BuildStatusText.Text = showcase.Characters.Count == 0
-                ? $"{showcase.Nickname} (AR {showcase.AdventureRank}) · UID {uid} has no public showcase characters. Enable Character Showcase visibility in-game and add characters."
-                : $"{showcase.Nickname} (AR {showcase.AdventureRank}) · UID {uid} · {showcase.Characters.Count} showcased character(s). Cached for {showcase.CacheSeconds}s.";
-            BuildCharactersHost.ItemsSource = showcase.Characters;
-            _buildCooldownTimer.Start();
+            if (!_buildWebViewInitializationStarted)
+            {
+                string profilePath = Path.Combine(AppDir, "WebView2");
+                Directory.CreateDirectory(profilePath);
+                BuildWebView.CreationProperties = new CoreWebView2CreationProperties
+                {
+                    UserDataFolder = profilePath
+                };
+                await BuildWebView.EnsureCoreWebView2Async();
+                BuildWebView.CoreWebView2.NavigationStarting += BuildWebView_NavigationStarting;
+                BuildWebView.CoreWebView2.NavigationCompleted += BuildWebView_NavigationCompleted;
+                _buildWebViewInitializationStarted = true;
+            }
+
+            BuildWebView.CoreWebView2.Navigate(_buildProfileUrl);
         }
-        catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException or JsonException
-                                   or InvalidDataException or IOException or UnauthorizedAccessException)
+        catch (Exception ex) when (ex is System.Runtime.InteropServices.COMException
+                                   or InvalidOperationException or IOException
+                                   or UnauthorizedAccessException or ArgumentException)
         {
-            BuildStatusText.Text = ex.Message;
-            int cooldown = ex is EnkaRequestException enkaError
-                ? enkaError.RetryAfterSeconds
-                : 15;
-            _buildNextRequestUtcByUid[uid] = DateTimeOffset.UtcNow.AddSeconds(cooldown);
-            _buildCooldownTimer.Start();
+            BuildStatusText.Text =
+                $"Could not initialize the embedded Enka.Network showcase. Install the Microsoft Edge WebView2 Runtime or open it in your browser.\n\n{ex.Message}";
+            BuildOpenBrowserButton.Visibility = Visibility.Visible;
         }
         finally
         {
@@ -398,16 +401,47 @@ public partial class MainWindow : Window
         }
     }
 
-    private void BuildCooldownTimer_Tick(object? sender, EventArgs e)
+    private void BuildWebView_NavigationStarting(
+        object? sender, CoreWebView2NavigationStartingEventArgs e)
     {
-        foreach (string uid in _buildNextRequestUtcByUid
-                     .Where(pair => pair.Value <= DateTimeOffset.UtcNow)
-                     .Select(pair => pair.Key)
-                     .ToList())
+        BuildStatusPanel.Visibility = Visibility.Visible;
+        BuildStatusText.Text = "Loading Enka.Network showcase…";
+        BuildOpenBrowserButton.Visibility = Visibility.Collapsed;
+    }
+
+    private void BuildWebView_NavigationCompleted(
+        object? sender, CoreWebView2NavigationCompletedEventArgs e)
+    {
+        if (e.IsSuccess)
         {
-            _buildNextRequestUtcByUid.Remove(uid);
+            BuildStatusPanel.Visibility = Visibility.Collapsed;
+            return;
         }
-        if (_buildNextRequestUtcByUid.Count == 0) _buildCooldownTimer.Stop();
+
+        BuildStatusText.Text =
+            $"The embedded showcase could not finish loading ({e.WebErrorStatus}). Check your connection or open it in your browser.";
+        BuildOpenBrowserButton.Visibility = Visibility.Visible;
+    }
+
+    private void BuildOpenBrowserButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (_buildProfileUrl is not string profileUrl)
+        {
+            BuildStatusText.Text = "Load a valid UID before opening a showcase.";
+            BuildStatusPanel.Visibility = Visibility.Visible;
+            BuildOpenBrowserButton.Visibility = Visibility.Collapsed;
+            return;
+        }
+
+        try
+        {
+            Process.Start(new ProcessStartInfo(profileUrl) { UseShellExecute = true });
+        }
+        catch (Exception ex) when (ex is InvalidOperationException or Win32Exception)
+        {
+            MessageBox.Show(this, $"Could not open the showcase in your browser: {ex.Message}",
+                "Character showcase", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
     }
 
     private void OpenWishTracker_Click(object sender, RoutedEventArgs e) => MainTabs.SelectedItem = WishTrackerTab;

@@ -449,41 +449,20 @@
                                     Margin="8,0,0,0" Click="UseSavedUid_Click"/>
                         </Grid>
                         <Grid Grid.Row="2">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="*"/>
-                            </Grid.RowDefinitions>
-                            <TextBlock x:Name="BuildStatusText" Grid.Row="0" Text="Enter a 9-digit UID. Your in-game Character Showcase must be visible to other players."
-                                       Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap"
-                                       Margin="4,0,4,10"/>
-                            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-                                <ItemsControl x:Name="BuildCharactersHost">
-                                    <ItemsControl.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <WrapPanel/>
-                                        </ItemsPanelTemplate>
-                                    </ItemsControl.ItemsPanel>
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <Border Background="{StaticResource CardBrush}" CornerRadius="12"
-                                                    Margin="5" Padding="15" Width="320">
-                                                <StackPanel>
-                                                    <TextBlock Text="{Binding Name}" Foreground="{StaticResource GoldBrush}"
-                                                               FontSize="16" FontWeight="SemiBold"/>
-                                                    <TextBlock Text="{Binding Summary}" Foreground="{StaticResource MutedBrush}"
-                                                               Margin="0,3,0,10"/>
-                                                    <TextBlock Text="{Binding StatsText}" Foreground="#E6E8F2"
-                                                               TextWrapping="Wrap" Margin="0,0,0,10"/>
-                                                    <TextBlock Text="{Binding ArtifactSummary}" Foreground="#B8BCD0"
-                                                               TextWrapping="Wrap" FontSize="12"/>
-                                                    <TextBlock Text="{Binding ArtifactDetails}" Foreground="#8A8FA8"
-                                                               TextWrapping="Wrap" FontSize="11" Margin="0,6,0,0"/>
-                                                </StackPanel>
-                                            </Border>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                            </ScrollViewer>
+                            <wv2:WebView2 x:Name="BuildWebView"/>
+                            <Border x:Name="BuildStatusPanel" Background="#E612131C" Padding="18"
+                                    HorizontalAlignment="Center" VerticalAlignment="Center"
+                                    CornerRadius="10" MaxWidth="560">
+                                <StackPanel>
+                                    <TextBlock x:Name="BuildStatusText"
+                                               Text="Enter a 9-digit UID to view its public Enka.Network character showcase."
+                                               Foreground="#E6E8F2" TextWrapping="Wrap" TextAlignment="Center"
+                                               Margin="0,0,0,12"/>
+                                    <Button x:Name="BuildOpenBrowserButton" Content="Open showcase in browser"
+                                            HorizontalAlignment="Center" Padding="12,6"
+                                            Visibility="Collapsed" Click="BuildOpenBrowserButton_Click"/>
+                                </StackPanel>
+                            </Border>
                         </Grid>
                     </Grid>
                 </TabItem>

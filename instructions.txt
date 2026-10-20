@@ -46,10 +46,11 @@ Primogem planner
 
 Builds
   Make a character showcase visible to other players in Genshin Impact. In the
-  Builds tab, enter the account's 9-digit UID and select Load Showcase. Only
-  characters in the public showcase are available; this does not show the
-  account's full character inventory. Enka responses are cached according to
-  the service's TTL.
+  Builds tab, enter the account's 9-digit UID and select Load Showcase to open
+  its public Enka.Network profile in the embedded browser. Only characters in
+  the public showcase are available; this does not show the account's full
+  character inventory. If the embedded page cannot load, use Open showcase in
+  browser.
 
 Resin & Daily
   Open the tab and select Sign in to HoYoLAB. Sign in within the embedded page,
@@ -127,9 +128,9 @@ Publish the app executable
 Create a GitHub release
   1. Set the Version in src\GenshinWishTracker.csproj to the new version.
   2. Push a Git tag whose name exactly matches that version, without a v prefix.
-     For example, for version 1.0.1:
-       git tag 1.0.1
-       git push origin 1.0.1
+     For example, for version 1.0.2:
+       git tag 1.0.2
+       git push origin 1.0.2
   3. The Publish release GitHub Actions workflow builds the app and installer,
      creates GenshinWishTracker.exe.sha256, and attaches all three files to the
      GitHub Release.

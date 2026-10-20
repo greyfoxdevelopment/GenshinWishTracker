@@ -2,7 +2,7 @@
 
 ## Your wishes, pity, and daily progress at a glance
 
-Keep your Genshin Impact wish history close while you play. Genshin Wish Tracker is a free, community-made Windows companion with a live wish dashboard, pity counters, an interactive map, character showcase summaries, and a resin and daily-commission view.
+Keep your Genshin Impact wish history close while you play. Genshin Wish Tracker is a free, community-made Windows companion with a live wish dashboard, pity counters, an interactive map, embedded character showcases, and a resin and daily-commission view.
 
 **Want to try it?** Download **`GenshinWishTrackerSetup.exe`** from the [latest GitHub Release](https://github.com/greyfoxdevelopment/GenshinWishTracker/releases/latest). Run the installer, accept the license, choose an install location, and it downloads and verifies the latest app for you. An internet connection is required during installation.
 
@@ -29,7 +29,7 @@ Keep your Genshin Impact wish history close while you play. Genshin Wish Tracker
 * **Track your wishes and pity.** View Character Event, Weapon Event, and Standard banner counts, including 4-star and 5-star pity. Sync your history by reading the game's local web cache to retrieve available history from HoYoverse safely.
 
 
-* **Plan your next character.** Explore an estimated featured-character probability based on primogems, fates, pity, and guarantee state. Look up a public character showcase by UID to review stats and artifact Crit Value.
+* **Plan your next character.** Explore an estimated featured-character probability based on primogems, fates, pity, and guarantee state. View a public character showcase by UID in the embedded Enka.Network page, including its character and artifact details.
 
 
 * **Keep useful tools together.** View real-time player data in your companion dashboard, tracking your current Resin, commissions, Realm Currency, and expedition progress.
@@ -38,7 +38,7 @@ Keep your Genshin Impact wish history close while you play. Genshin Wish Tracker
 
 ## A privacy-conscious companion
 
-The app reads the game's local cache files; it does not interact with the game process. Wish history and settings are stored locally under `%LOCALAPPDATA%\GenshinWishTracker`. The wish link is held in memory during syncing and is not written to the history, settings, or logs. Network requests are made to the services needed for the feature you use, including HoYoverse, HoYoLAB, Enka, and GitHub for releases and updates.
+The app reads the game's local cache files; it does not interact with the game process. Wish history and settings are stored locally under `%LOCALAPPDATA%\GenshinWishTracker`. The wish link is held in memory during syncing and is not written to the history, settings, or logs. Network requests are made to the services needed for the feature you use, including HoYoverse, HoYoLAB, Enka.Network for public showcase pages, and GitHub for releases and updates.
 
 This is an unofficial community project, not affiliated with or endorsed by HoYoverse. Genshin Impact is a trademark of HoYoverse (COGNOSPHERE).
 
@@ -51,4 +51,3 @@ See [`instructions.txt`](instructions.txt) for installation, first-time setup, f
 The app is a Windows x64 WPF application built with .NET 8. Open `src\GenshinWishTracker.csproj` in Visual Studio or build it with the .NET 8 SDK. See `instructions.txt` for build and release steps.
 
 Released under the [MIT License](LICENSE).
-
