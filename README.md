@@ -22,24 +22,14 @@ Keep your Genshin Impact wish history close while you play. Genshin Wish Tracker
 ## Made for your play session
 
 * **Track your wishes and pity.** View Character Event, Weapon Event, and Standard banner counts, including 4-star and 5-star pity. Sync your history by reading the game's local web cache to retrieve available history from HoYoverse safely.
-  <p align="center">
-    <img src="screenshots/wish.png" alt="Wish Tracker Dashboard" width="750">
-  </p>
+
 
 * **Plan your next character.** Explore an estimated featured-character probability based on primogems, fates, pity, and guarantee state. Look up a public character showcase by UID to review stats and artifact Crit Value.
-  <p align="center">
-    <img src="screenshots/primos.png" alt="Pity and Primogem Calculator" width="750">
-  </p>
+
 
 * **Keep useful tools together.** View real-time player data in your companion dashboard, tracking your current Resin, commissions, Realm Currency, and expedition progress.
-  <p align="center">
-    <img src="screenshots/resin-daily.png" alt="Resin and Daily Progress Tracking" width="750">
-  </p>
 
 * **Integrated layout features.** Fit the app perfectly around your active play setup. Open HoYoLAB's interactive map directly in the dashboard, resize the window, move it across multiple screens, or toggle it to stay pinned on top.
-  <p align="center">
-    <img src="screenshots/map.png" alt="Interactive Map Dashboard Overlay" width="750">
-  </p>
 
 ## A privacy-conscious companion
 
