@@ -14,6 +14,17 @@ the latest app for you. An internet connection is required during installation.
 > The installer is published with tagged releases. If there is no installer asset on the latest
 > release yet, check back after the next project release.
 
+## Screenshots
+
+<p align="center">
+  <img src="screenshots/wish.png" alt="Wish Tracker Dashboard" width="400"> &nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="screenshots/primos.png" alt="Pity and Primogem Calculator" width="400">
+</p>
+<p align="center">
+  <img src="screenshots/resin-daily.png" alt="Resin and Daily Progress" width="400"> &nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="screenshots/map.png" alt="Interactive Map Dashboard" width="400">
+</p>
+
 ## Made for your play session
 
 - **Track your wishes and pity.** View Character Event, Weapon Event, and Standard banner counts,
