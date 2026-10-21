@@ -2,12 +2,17 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:GenshinWishTracker"
+        xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
         xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
         Title="Genshin Wish Tracker"
         Width="1180" Height="780" MinWidth="900" MinHeight="600"
-        WindowStyle="None" AllowsTransparency="True" Background="Transparent"
+        WindowStyle="None" AllowsTransparency="False" Background="#12131C"
         ResizeMode="CanResize" WindowStartupLocation="CenterScreen"
         FontFamily="Segoe UI" Loaded="Window_Loaded" StateChanged="Window_StateChanged">
+    <shell:WindowChrome.WindowChrome>
+        <shell:WindowChrome CaptionHeight="0" ResizeBorderThickness="8"
+                            GlassFrameThickness="0" UseAeroCaptionButtons="False"/>
+    </shell:WindowChrome.WindowChrome>
 
     <!-- ================= STEP 1: THEME RESOURCES ================= -->
     <Window.Resources>
@@ -194,60 +199,24 @@
             <TabControl x:Name="MainTabs" Grid.Row="1" Margin="0,8,0,0"
                         SelectionChanged="MainTabs_SelectionChanged">
                 <TabItem x:Name="DashboardTab" Header="Dashboard">
-                    <ScrollViewer VerticalScrollBarVisibility="Auto">
-                        <StackPanel Margin="12">
-                            <TextBlock Text="Genshin Companion" FontSize="26" FontWeight="SemiBold"
-                                       Foreground="#E6E8F2"/>
-                            <TextBlock Text="Your game tools, together in one place."
-                                       Foreground="{StaticResource MutedBrush}" Margin="0,4,0,20"/>
-                            <UniformGrid Columns="2">
-                                <Border Background="{StaticResource CardBrush}" CornerRadius="12"
-                                        Margin="6" Padding="18">
-                                    <StackPanel>
-                                        <TextBlock Text="WISH TRACKER" Foreground="{StaticResource GoldBrush}"
-                                                   FontWeight="SemiBold"/>
-                                        <TextBlock x:Name="DashboardWishSummary" Text="No wish history loaded"
-                                                   Foreground="#E6E8F2" Margin="0,8,0,12"/>
-                                        <Button Content="Open Wish Tracker" HorizontalAlignment="Left"
-                                                Padding="12,6" Click="OpenWishTracker_Click"/>
-                                    </StackPanel>
-                                </Border>
-                                <Border Background="{StaticResource CardBrush}" CornerRadius="12"
-                                        Margin="6" Padding="18">
-                                    <StackPanel>
-                                        <TextBlock Text="RESIN &amp; DAILY" Foreground="{StaticResource GoldBrush}"
-                                                   FontWeight="SemiBold"/>
-                                        <TextBlock Text="Resin, commissions, and Realm Currency."
-                                                   Foreground="#E6E8F2" Margin="0,8,0,12"/>
-                                        <Button Content="Open Resin Dashboard" HorizontalAlignment="Left"
-                                                Padding="12,6" Click="OpenResin_Click"/>
-                                    </StackPanel>
-                                </Border>
-                                <Border Background="{StaticResource CardBrush}" CornerRadius="12"
-                                        Margin="6" Padding="18">
-                                    <StackPanel>
-                                        <TextBlock Text="BUILD EVALUATOR" Foreground="{StaticResource GoldBrush}"
-                                                   FontWeight="SemiBold"/>
-                                        <TextBlock Text="Review showcase characters and artifact stats."
-                                                   Foreground="#E6E8F2" Margin="0,8,0,12"/>
-                                        <Button Content="Open Build Evaluator" HorizontalAlignment="Left"
-                                                Padding="12,6" Click="OpenBuilds_Click"/>
-                                    </StackPanel>
-                                </Border>
-                                <Border Background="{StaticResource CardBrush}" CornerRadius="12"
-                                        Margin="6" Padding="18">
-                                    <StackPanel>
-                                        <TextBlock Text="PRIMOGEM PLANNER" Foreground="{StaticResource GoldBrush}"
-                                                   FontWeight="SemiBold"/>
-                                        <TextBlock Text="Estimate your featured 5★ chance from your savings."
-                                                   Foreground="#E6E8F2" Margin="0,8,0,12"/>
-                                        <Button Content="Open Primogem Planner" HorizontalAlignment="Left"
-                                                Padding="12,6" Click="OpenPlanner_Click"/>
-                                    </StackPanel>
-                                </Border>
-                            </UniformGrid>
-                        </StackPanel>
-                    </ScrollViewer>
+                    <Grid>
+                        <wv2:WebView2 x:Name="DiscussionsView"/>
+                        <Border x:Name="DiscussionsStatusPanel" Background="#E612131C" Padding="18"
+                                HorizontalAlignment="Center" VerticalAlignment="Center"
+                                CornerRadius="10" MaxWidth="560">
+                            <StackPanel>
+                                <TextBlock x:Name="DiscussionsStatusText"
+                                           Text="GitHub Discussions will load here."
+                                           Foreground="#E6E8F2" TextWrapping="Wrap" TextAlignment="Center"
+                                           Margin="0,0,0,12"/>
+                                <Button x:Name="DiscussionsOpenBrowserButton"
+                                        Content="Open Discussions in browser"
+                                        HorizontalAlignment="Center" Padding="12,6"
+                                        Visibility="Collapsed"
+                                        Click="DiscussionsOpenBrowserButton_Click"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
                 </TabItem>
 
                 <TabItem x:Name="WishTrackerTab" Header="Wishes">

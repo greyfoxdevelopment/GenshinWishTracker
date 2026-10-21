@@ -2,7 +2,7 @@
 
 ## Your wishes, pity, and daily progress at a glance
 
-Keep your Genshin Impact wish history close while you play. Genshin Wish Tracker is a free, community-made Windows companion with a live wish dashboard, pity counters, an interactive map, embedded character showcases, and a resin and daily-commission view.
+Keep your Genshin Impact wish history close while you play. Genshin Wish Tracker is a free, community-made Windows companion with a live wish dashboard, pity counters, an interactive map, embedded character showcases, GitHub Discussions, and a resin and daily-commission view.
 
 **Want to try it?** Download **`GenshinWishTrackerSetup.exe`** from the [latest GitHub Release](https://github.com/greyfoxdevelopment/GenshinWishTracker/releases/latest). Run the installer, accept the license, choose an install location, and it downloads and verifies the latest app for you. An internet connection is required during installation.
 
@@ -34,7 +34,9 @@ Keep your Genshin Impact wish history close while you play. Genshin Wish Tracker
 
 * **Keep useful tools together.** View real-time player data in your companion dashboard, tracking your current Resin, commissions, Realm Currency, and expedition progress.
 
-* **Integrated layout features.** Fit the app perfectly around your active play setup. Open HoYoLAB's interactive map directly in the dashboard, resize the window, move it across multiple screens, or toggle it to stay pinned on top.
+* **Join the community.** Browse the project's GitHub Discussions in the dashboard and open them in your browser if needed.
+
+* **Integrated layout features.** Open GitHub Discussions, HoYoLAB's interactive map, and public Enka.Network showcases inside the app. Resize or move the window to fit your play setup, or keep it pinned on top.
 
 ## A privacy-conscious companion
 

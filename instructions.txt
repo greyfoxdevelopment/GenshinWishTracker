@@ -13,8 +13,9 @@ INSTALL THE APP
    checksum before placing it in the selected folder.
 
 The installer is a self-contained Windows x64 program. It does not require the
-.NET runtime to be installed. The app's Interactive Map feature requires the
-Microsoft Edge WebView2 Runtime, which is already present on most Windows PCs.
+.NET runtime to be installed. Embedded web pages (Discussions, Interactive Map,
+and character showcases) require the Microsoft Edge WebView2 Runtime, which is
+already present on most Windows PCs.
 
 FIRST-TIME WISH SYNC
 --------------------
@@ -61,9 +62,15 @@ Interactive Map
   The map opens HoYoLAB's official Interactive Map in the app. Map features
   depend on HoYoLAB and its embedded sign-in session.
 
+Dashboard & Discussions
+  The Dashboard opens the project's GitHub Discussions. Browse public
+  discussions in the app; GitHub may ask you to sign in to participate. If
+  Discussions cannot load, use Open Discussions in browser.
+
 Window
-  Move or resize the window as needed. Use the pin control to keep the window
-  above other windows, for example while playing on another screen.
+  Drag the title bar to move the window. Drag any border or corner to resize
+  it, or use the maximize/restore control. Use the pin control to keep the
+  window above other windows, for example while playing on another screen.
 
 DATA AND PRIVACY
 ----------------
@@ -128,9 +135,9 @@ Publish the app executable
 Create a GitHub release
   1. Set the Version in src\GenshinWishTracker.csproj to the new version.
   2. Push a Git tag whose name exactly matches that version, without a v prefix.
-     For example, for version 1.0.2:
-       git tag 1.0.2
-       git push origin 1.0.2
+     For example, for version 1.0.3:
+       git tag 1.0.3
+       git push origin 1.0.3
   3. The Publish release GitHub Actions workflow builds the app and installer,
      creates GenshinWishTracker.exe.sha256, and attaches all three files to the
      GitHub Release.

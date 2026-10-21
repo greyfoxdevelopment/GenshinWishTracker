@@ -8,7 +8,7 @@
     <UseWPF>true</UseWPF>
     <AssemblyName>GenshinWishTracker</AssemblyName>
     <RootNamespace>GenshinWishTracker</RootNamespace>
-    <Version>1.0.2</Version>
+    <Version>1.0.3</Version>
     <Product>Genshin Wish Tracker</Product>
     <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
     <ApplicationIcon>Resources\gwt.ico</ApplicationIcon>

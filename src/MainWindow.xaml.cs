@@ -24,10 +24,12 @@ namespace GenshinWishTracker;
 public partial class MainWindow : Window
 {
     private const string InteractiveMapUrl = "https://act.hoyolab.com/ys/app/interactive-map/index.html";
+    private const string DiscussionsUrl = "https://github.com/greyfoxdevelopment/GenshinWishTracker/discussions";
     private const string HoyolabHomeUrl = "https://www.hoyolab.com/home";
     private const int PageSize = 20;
     private const int DelayBetweenPagesMs = 350;
     private bool _mapInitializationStarted;
+    private bool _discussionsInitializationStarted;
     private bool _buildWebViewInitializationStarted;
     private bool _hoyolabInitializationStarted;
     private bool _hoyolabRequestRunning;
@@ -100,6 +102,8 @@ public partial class MainWindow : Window
         UpdatePlanner();
         BuildUidInput.Text = _store.LastUid ?? "";
         _resinCountdownTimer.Tick += (_, _) => RenderDailyNote();
+        if (MainTabs.SelectedItem == DashboardTab)
+            await InitializeDiscussionsAsync();
         await CheckForUpdatesAsync();
     }
 
@@ -444,11 +448,6 @@ public partial class MainWindow : Window
         }
     }
 
-    private void OpenWishTracker_Click(object sender, RoutedEventArgs e) => MainTabs.SelectedItem = WishTrackerTab;
-    private void OpenResin_Click(object sender, RoutedEventArgs e) => MainTabs.SelectedItem = ResinTab;
-    private void OpenBuilds_Click(object sender, RoutedEventArgs e) => MainTabs.SelectedItem = BuildEvaluatorTab;
-    private void OpenPlanner_Click(object sender, RoutedEventArgs e) => MainTabs.SelectedItem = PrimogemPlannerTab;
-
     private void PlannerInput_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
     {
         if (IsLoaded) UpdatePlanner();
@@ -478,9 +477,6 @@ public partial class MainWindow : Window
         PlannerChance.Text = $"{chance:P1}";
         PlannerChanceBar.Value = chance * 100;
         PlannerGuaranteePulls.Text = worstCaseWishes.ToString();
-        DashboardWishSummary.Text = _store.Items.Count == 0
-            ? "No wish history loaded"
-            : $"{_store.Items.Count:N0} wishes saved · UID {_store.LastUid ?? "—"}";
     }
 
     private static double CalculateFeaturedChance(int availableWishes, int currentPity, bool guaranteed, int targetCopies)
@@ -541,7 +537,13 @@ public partial class MainWindow : Window
 
     private async void MainTabs_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        if (!ReferenceEquals(e.Source, sender) || MainTabs.SelectedItem != InteractiveMapTab) return;
+        if (!ReferenceEquals(e.Source, sender)) return;
+        if (MainTabs.SelectedItem == DashboardTab && !_discussionsInitializationStarted)
+        {
+            await InitializeDiscussionsAsync();
+            return;
+        }
+        if (MainTabs.SelectedItem != InteractiveMapTab) return;
         if (_mapInitializationStarted) return;
         _mapInitializationStarted = true;
         MapStatusPanel.Visibility = Visibility.Visible;
@@ -566,6 +568,73 @@ public partial class MainWindow : Window
             MapStatusText.Text =
                 $"Could not initialize the embedded map. Install the Microsoft Edge WebView2 Runtime or open the map in your browser.\n\n{ex.Message}";
             MapOpenBrowserButton.Visibility = Visibility.Visible;
+        }
+    }
+
+    private async Task InitializeDiscussionsAsync()
+    {
+        if (_discussionsInitializationStarted) return;
+        _discussionsInitializationStarted = true;
+        DiscussionsStatusPanel.Visibility = Visibility.Visible;
+        DiscussionsStatusText.Text = "Initializing GitHub Discussions…";
+        DiscussionsOpenBrowserButton.Visibility = Visibility.Collapsed;
+
+        try
+        {
+            string profilePath = Path.Combine(AppDir, "WebView2", "Discussions");
+            Directory.CreateDirectory(profilePath);
+            DiscussionsView.CreationProperties = new CoreWebView2CreationProperties
+            {
+                UserDataFolder = profilePath
+            };
+
+            await DiscussionsView.EnsureCoreWebView2Async();
+            DiscussionsView.CoreWebView2.NavigationStarting += DiscussionsView_NavigationStarting;
+            DiscussionsView.CoreWebView2.NavigationCompleted += DiscussionsView_NavigationCompleted;
+            DiscussionsView.CoreWebView2.Navigate(DiscussionsUrl);
+        }
+        catch (Exception ex) when (ex is System.Runtime.InteropServices.COMException
+                                   or InvalidOperationException or IOException
+                                   or UnauthorizedAccessException or ArgumentException)
+        {
+            DiscussionsStatusText.Text =
+                $"Could not initialize GitHub Discussions in the app. Install the Microsoft Edge WebView2 Runtime or open Discussions in your browser.\n\n{ex.Message}";
+            DiscussionsOpenBrowserButton.Visibility = Visibility.Visible;
+        }
+    }
+
+    private void DiscussionsView_NavigationStarting(
+        object? sender, CoreWebView2NavigationStartingEventArgs e)
+    {
+        DiscussionsStatusPanel.Visibility = Visibility.Visible;
+        DiscussionsStatusText.Text = "Loading GitHub Discussions…";
+        DiscussionsOpenBrowserButton.Visibility = Visibility.Collapsed;
+    }
+
+    private void DiscussionsView_NavigationCompleted(
+        object? sender, CoreWebView2NavigationCompletedEventArgs e)
+    {
+        if (e.IsSuccess)
+        {
+            DiscussionsStatusPanel.Visibility = Visibility.Collapsed;
+            return;
+        }
+
+        DiscussionsStatusText.Text =
+            $"GitHub Discussions could not finish loading ({e.WebErrorStatus}). Check your connection or open Discussions in your browser.";
+        DiscussionsOpenBrowserButton.Visibility = Visibility.Visible;
+    }
+
+    private void DiscussionsOpenBrowserButton_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            Process.Start(new ProcessStartInfo(DiscussionsUrl) { UseShellExecute = true });
+        }
+        catch (Exception ex) when (ex is InvalidOperationException or Win32Exception)
+        {
+            MessageBox.Show(this, $"Could not open GitHub Discussions in your browser: {ex.Message}",
+                "GitHub Discussions", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 
