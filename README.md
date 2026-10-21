@@ -10,7 +10,7 @@ Keep your Genshin Impact wish history close while you play. Genshin Wish Tracker
 
 > ⚠️ **Note on Windows Warnings:** Windows SmartScreen may show a warning for the unsigned installer. Click **"More info"** and **"Run anyway"**, or verify safety via the VirusTotal report below:
 
-> 🛡️ **[View the latest VirusTotal Scan Report - V1.0.1 ](https://www.virustotal.com/gui/file/d84c52f349f17a646646a9be2b5abf49b1c817d29417c4160960648be49cdaec?nocache=1)**
+> 🛡️ **[View the latest VirusTotal Scan Report - V1.0.3 ](https://www.virustotal.com/gui/file/6f42767ead11026ad778a4ffccfb4e03ada177a3304243a482bb004b86f49afd?nocache=1)**
         **Virus total Link will be updated with each new Release**
 
 ## Screenshots
