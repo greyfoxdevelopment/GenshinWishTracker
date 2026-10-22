@@ -1,4 +1,5 @@
 # Genshin Wish Tracker
+![GitHub Downloads (all assets, latest release)](https://img.shields.io/github/downloads/greyfoxdevelopment/GenshinWishTracker/latest/total)
 
 ## Your wishes, pity, and daily progress at a glance
 
