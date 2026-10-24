@@ -21,7 +21,7 @@ Keep your Genshin Impact wish history close while you play. Genshin Companion is
 
 > ⚠️ **Note on Windows Warnings:** Windows SmartScreen may show a warning for the unsigned installer. Click **"More info"** and **"Run anyway"**, or verify safety via the VirusTotal report below:
 
-> 🛡️ **[View the latest VirusTotal Scan Report - V1.1.2 ](https://www.virustotal.com/gui/file/08f7aa3260f5634d36859e7bba5e675273fe39bae3560273a7f31a20ae99fc6d?nocache=1)**
+> 🛡️ **[View the latest VirusTotal Scan Report - V1.1.3 ](https://www.virustotal.com/gui/file/08f7aa3260f5634d36859e7bba5e675273fe39bae3560273a7f31a20ae99fc6d?nocache=1)**
         **Virus total Link will be updated with each new Release**
 
 ## Screenshots
