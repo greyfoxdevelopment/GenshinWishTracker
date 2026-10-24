@@ -9,7 +9,7 @@
     <AssemblyName>GenshinCompanion</AssemblyName>
     <AssemblyTitle>Genshin Companion</AssemblyTitle>
     <RootNamespace>GenshinWishTracker</RootNamespace>
-    <Version>1.1.2</Version>
+    <Version>1.1.3</Version>
     <Product>Genshin Companion</Product>
     <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
     <ApplicationIcon>Resources\gwt.ico</ApplicationIcon>
