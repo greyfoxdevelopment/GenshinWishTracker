@@ -1,4 +1,11 @@
 # Genshin Companion
+
+## IMPORTANT: USE THE RELEASE INSTALLER TO GET THE CURRENT VERSION
+
+**DOWNLOAD `GenshinCompanionSetup.exe` FROM THE [LATEST GITHUB RELEASE](https://github.com/greyfoxdevelopment/GFDev-Genshin-Companion/releases/latest). DO NOT DOWNLOAD OR RUN AN EXE FROM THE REPOSITORY'S MAIN FILES — THOSE FILES MAY BE OUTDATED (FOR EXAMPLE, VERSION 1.0.1) AND ARE NOT THE PUBLISHED RELEASE.**
+
+**The release installer is the supported way to install or refresh the app. Once installed from a release, the app checks for updates on launch.**
+
 ![GitHub Downloads (all assets, latest release)](https://img.shields.io/github/downloads/greyfoxdevelopment/GFDev-Genshin-Companion/latest/total)
 
 

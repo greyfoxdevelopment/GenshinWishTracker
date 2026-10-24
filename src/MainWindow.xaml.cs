@@ -813,8 +813,10 @@ public partial class MainWindow : Window
     private async Task CheckForUpdatesAsync()
     {
         string? executablePath = Environment.ProcessPath;
+        string? applicationName = Assembly.GetExecutingAssembly().GetName().Name;
         if (executablePath == null ||
-            !string.Equals(Path.GetFileNameWithoutExtension(executablePath), "GenshinWishTracker", StringComparison.OrdinalIgnoreCase))
+            string.IsNullOrEmpty(applicationName) ||
+            !string.Equals(Path.GetFileNameWithoutExtension(executablePath), applicationName, StringComparison.OrdinalIgnoreCase))
         {
             return;
         }
@@ -828,7 +830,7 @@ public partial class MainWindow : Window
 
             MessageBoxResult result = MessageBox.Show(
                 this,
-                $"Version {update.Tag} is available (you have {currentVersion}). Download and install it now?",
+                $"Version {update.Tag} is available (you have {CurrentVersionText()}). Download and install it now?",
                 "Genshin Companion update",
                 MessageBoxButton.YesNo,
                 MessageBoxImage.Information);
@@ -1469,8 +1471,8 @@ public partial class MainWindow : Window
     private static BannerStats ComputeStats(BannerDef def, IEnumerable<WishItem> items)
     {
         var ordered = items.OrderBy(i => ParseId(i.Id)).ToList();
-        int pity = 0, fourPity = 0, fiveCount = 0;
-        string lastFive = "—";
+        int pity = 0, fourPity = 0, fourCount = 0, fiveCount = 0;
+        string lastFour = "—", lastFive = "—";
         foreach (var wish in ordered)
         {
             pity++;
@@ -1483,6 +1485,8 @@ public partial class MainWindow : Window
             }
             else if (wish.RankType == "4")
             {
+                fourCount++;
+                lastFour = $"{wish.Name}  ({fourPity} pulls)";
                 fourPity = 0;
             }
         }
@@ -1498,7 +1502,9 @@ public partial class MainWindow : Window
             SoftPity = def.SoftPity,
             FourStarPity = Math.Min(fourPity, 10),
             TotalPulls = ordered.Count,
+            FourStarCount = fourCount,
             FiveStarCount = fiveCount,
+            LastFourStar = lastFour,
             LastFiveStar = lastFive
         };
     }

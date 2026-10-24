@@ -76,7 +76,9 @@ public sealed class BannerStats
     public int SoftPity { get; init; }
     public int FourStarPity { get; init; }    // pulls since last 4★ (guaranteed at 10)
     public int TotalPulls { get; init; }
+    public int FourStarCount { get; init; }
     public int FiveStarCount { get; init; }
+    public string LastFourStar { get; init; } = "—";
     public string LastFiveStar { get; init; } = "—";
 
     private bool InSoftPity => Pity + 1 >= SoftPity;   // the NEXT pull is at/after soft pity
