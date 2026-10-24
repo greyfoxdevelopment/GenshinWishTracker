@@ -24,12 +24,15 @@ namespace GenshinWishTracker;
 public partial class MainWindow : Window
 {
     private const string InteractiveMapUrl = "https://act.hoyolab.com/ys/app/interactive-map/index.html";
-    private const string DiscussionsUrl = "https://github.com/greyfoxdevelopment/GenshinWishTracker/discussions";
+    private const string DiscordUrl = "https://discord.com/invite/WQknYbRKBt";
+    private const string KofiUrl = "https://ko-fi.com/greyfoxdevelopment";
     private const string HoyolabHomeUrl = "https://www.hoyolab.com/home";
     private const int PageSize = 20;
     private const int DelayBetweenPagesMs = 350;
     private bool _mapInitializationStarted;
-    private bool _discussionsInitializationStarted;
+    private bool _changelogLoaded;
+    private bool _changelogLoading;
+    private bool _supportInitializationStarted;
     private bool _buildWebViewInitializationStarted;
     private bool _hoyolabInitializationStarted;
     private bool _hoyolabRequestRunning;
@@ -102,9 +105,10 @@ public partial class MainWindow : Window
         UpdatePlanner();
         BuildUidInput.Text = _store.LastUid ?? "";
         _resinCountdownTimer.Tick += (_, _) => RenderDailyNote();
-        if (MainTabs.SelectedItem == DashboardTab)
-            await InitializeDiscussionsAsync();
+        // The changelog loads in the background so it never delays the update check.
+        Task changelogTask = LoadChangelogAsync();
         await CheckForUpdatesAsync();
+        await changelogTask;
     }
 
     private async void HoyolabSignInButton_Click(object sender, RoutedEventArgs e)
@@ -537,10 +541,16 @@ public partial class MainWindow : Window
 
     private async void MainTabs_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        if (!ReferenceEquals(e.Source, sender)) return;
-        if (MainTabs.SelectedItem == DashboardTab && !_discussionsInitializationStarted)
+        if (!IsLoaded || !ReferenceEquals(e.Source, sender)) return;
+        if (MainTabs.SelectedItem == DashboardTab)
         {
-            await InitializeDiscussionsAsync();
+            // Retry automatically if the first load failed (for example, no connection at startup).
+            if (!_changelogLoaded) await LoadChangelogAsync();
+            return;
+        }
+        if (MainTabs.SelectedItem == SupportTab)
+        {
+            await InitializeSupportAsync();
             return;
         }
         if (MainTabs.SelectedItem != InteractiveMapTab) return;
@@ -571,71 +581,206 @@ public partial class MainWindow : Window
         }
     }
 
-    private async Task InitializeDiscussionsAsync()
+    // ---------------------------------------------------------------------
+    // Dashboard changelog (recent commits from the project's GitHub repository)
+    // ---------------------------------------------------------------------
+    private static string CurrentVersionText()
     {
-        if (_discussionsInitializationStarted) return;
-        _discussionsInitializationStarted = true;
-        DiscussionsStatusPanel.Visibility = Visibility.Visible;
-        DiscussionsStatusText.Text = "Initializing GitHub Discussions…";
-        DiscussionsOpenBrowserButton.Visibility = Visibility.Collapsed;
+        Version? version = Assembly.GetExecutingAssembly().GetName().Version;
+        return version == null ? "unknown" : $"{version.Major}.{version.Minor}.{Math.Max(version.Build, 0)}";
+    }
+
+    private void SetChangelogSubtitle(string text, bool isError = false)
+    {
+        ChangelogSubtitle.Text = text;
+        ChangelogSubtitle.Foreground = (Brush)FindResource(isError ? "ErrorBrush" : "MutedBrush");
+    }
+
+    private async Task LoadChangelogAsync()
+    {
+        if (_changelogLoading) return;
+        _changelogLoading = true;
+        ChangelogRefreshButton.IsEnabled = false;
+
+        bool hasEntries = ChangelogList.Items.Count > 0;
+        if (!hasEntries)
+        {
+            ChangelogStatusText.Text = "Loading recent changes…";
+            ChangelogStatusPanel.Visibility = Visibility.Visible;
+        }
 
         try
         {
-            string profilePath = Path.Combine(AppDir, "WebView2", "Discussions");
+            IReadOnlyList<ChangelogEntry> entries = await ChangelogService.GetRecentChangesAsync();
+            ChangelogList.ItemsSource = entries;
+            _changelogLoaded = true;
+
+            if (entries.Count == 0)
+            {
+                ChangelogStatusText.Text = "No changes to show yet.";
+                ChangelogStatusPanel.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                ChangelogStatusPanel.Visibility = Visibility.Collapsed;
+            }
+
+            SetChangelogSubtitle(
+                $"You're on version {CurrentVersionText()} · recent changes from the project's commit history");
+        }
+        catch (ChangelogException ex)
+        {
+            ShowChangelogError(ex.Message, hasEntries);
+        }
+        catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException or JsonException)
+        {
+            ShowChangelogError($"Could not load the changelog: {ex.Message}", hasEntries);
+        }
+        finally
+        {
+            _changelogLoading = false;
+            ChangelogRefreshButton.IsEnabled = true;
+        }
+    }
+
+    private void ShowChangelogError(string message, bool keepExistingEntries)
+    {
+        // A failed refresh keeps the entries already on screen and reports the problem under the title.
+        if (keepExistingEntries)
+        {
+            SetChangelogSubtitle(message, isError: true);
+            return;
+        }
+
+        ChangelogStatusText.Text = message;
+        ChangelogStatusPanel.Visibility = Visibility.Visible;
+    }
+
+    private async void ChangelogRefreshButton_Click(object sender, RoutedEventArgs e) =>
+        await LoadChangelogAsync();
+
+    private void ChangelogOpenBrowserButton_Click(object sender, RoutedEventArgs e) =>
+        OpenInBrowser(ChangelogService.CommitsPageUrl, "the commit history");
+
+    private void ChangelogEntry_Click(object sender, MouseButtonEventArgs e)
+    {
+        if (sender is FrameworkElement { Tag: Uri commitUri })
+            OpenInBrowser(commitUri.AbsoluteUri, "this commit");
+    }
+
+    // ---------------------------------------------------------------------
+    // Discord / Ko-fi buttons and the Support tab
+    // ---------------------------------------------------------------------
+    private void DiscordButton_Click(object sender, RoutedEventArgs e) =>
+        OpenInBrowser(DiscordUrl, "Discord");
+
+    private void KofiButton_Click(object sender, RoutedEventArgs e) =>
+        OpenInBrowser(KofiUrl, "Ko-fi");
+
+    private void OpenInBrowser(string url, string what)
+    {
+        try
+        {
+            Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+        }
+        catch (Exception ex) when (ex is InvalidOperationException or Win32Exception)
+        {
+            MessageBox.Show(this, $"Could not open {what} in your browser: {ex.Message}",
+                "Genshin Wish Tracker", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    private const string KofiWidgetHtml = """
+        <!doctype html>
+        <html>
+        <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <style>
+          html, body { margin: 0; background: #12131C; }
+          iframe { display: block; box-sizing: border-box; }
+        </style>
+        </head>
+        <body>
+        <iframe id='kofiframe' src='https://ko-fi.com/greyfoxdevelopment/?hidefeed=true&widget=true&embed=true&preview=true' style='border:none;width:100%;padding:4px;background:#f9f9f9;' height='712' title='greyfoxdevelopment'></iframe>
+        </body>
+        </html>
+        """;
+
+    private async Task InitializeSupportAsync()
+    {
+        if (_supportInitializationStarted) return;
+        _supportInitializationStarted = true;
+        SupportStatusPanel.Visibility = Visibility.Visible;
+        SupportStatusText.Text = "Loading the Ko-fi widget…";
+
+        try
+        {
+            // Its own profile keeps Ko-fi's cookies apart from the HoYoLAB sign-in.
+            string profilePath = Path.Combine(AppDir, "WebView2", "Support");
             Directory.CreateDirectory(profilePath);
-            DiscussionsView.CreationProperties = new CoreWebView2CreationProperties
+            SupportWebView.CreationProperties = new CoreWebView2CreationProperties
             {
                 UserDataFolder = profilePath
             };
+            SupportWebView.DefaultBackgroundColor = System.Drawing.Color.FromArgb(0x12, 0x13, 0x1C);
 
-            await DiscussionsView.EnsureCoreWebView2Async();
-            DiscussionsView.CoreWebView2.NavigationStarting += DiscussionsView_NavigationStarting;
-            DiscussionsView.CoreWebView2.NavigationCompleted += DiscussionsView_NavigationCompleted;
-            DiscussionsView.CoreWebView2.Navigate(DiscussionsUrl);
+            await SupportWebView.EnsureCoreWebView2Async();
+            CoreWebView2 core = SupportWebView.CoreWebView2;
+            core.NavigationStarting += SupportWebView_NavigationStarting;
+            core.NewWindowRequested += SupportWebView_NewWindowRequested;
+            core.NavigationCompleted += SupportWebView_NavigationCompleted;
+            core.NavigateToString(KofiWidgetHtml);
         }
         catch (Exception ex) when (ex is System.Runtime.InteropServices.COMException
                                    or InvalidOperationException or IOException
                                    or UnauthorizedAccessException or ArgumentException)
         {
-            DiscussionsStatusText.Text =
-                $"Could not initialize GitHub Discussions in the app. Install the Microsoft Edge WebView2 Runtime or open Discussions in your browser.\n\n{ex.Message}";
-            DiscussionsOpenBrowserButton.Visibility = Visibility.Visible;
+            SupportStatusText.Text =
+                $"Could not load the Ko-fi widget in the app. Install the Microsoft Edge WebView2 Runtime, or use the Ko-fi button.\n\n{ex.Message}";
         }
     }
 
-    private void DiscussionsView_NavigationStarting(
+    private void SupportWebView_NavigationStarting(
         object? sender, CoreWebView2NavigationStartingEventArgs e)
     {
-        DiscussionsStatusPanel.Visibility = Visibility.Visible;
-        DiscussionsStatusText.Text = "Loading GitHub Discussions…";
-        DiscussionsOpenBrowserButton.Visibility = Visibility.Collapsed;
+        // The tab only ever hosts the widget page; anything else is refused.
+        if (!IsAllowedSupportUri(e.Uri)) e.Cancel = true;
     }
 
-    private void DiscussionsView_NavigationCompleted(
+    private static bool IsAllowedSupportUri(string uri)
+    {
+        if (!Uri.TryCreate(uri, UriKind.Absolute, out Uri? parsed)) return false;
+        if (parsed.Scheme is "data" or "about") return true;
+        return parsed.Scheme == Uri.UriSchemeHttps &&
+               (parsed.Host.Equals("ko-fi.com", StringComparison.OrdinalIgnoreCase) ||
+                parsed.Host.EndsWith(".ko-fi.com", StringComparison.OrdinalIgnoreCase));
+    }
+
+    private void SupportWebView_NewWindowRequested(
+        object? sender, CoreWebView2NewWindowRequestedEventArgs e)
+    {
+        // Pop-ups (such as the donation page) open in the default browser, never inside the app.
+        e.Handled = true;
+        if (Uri.TryCreate(e.Uri, UriKind.Absolute, out Uri? uri) && uri.Scheme == Uri.UriSchemeHttps)
+            OpenInBrowser(uri.AbsoluteUri, "Ko-fi");
+    }
+
+    private void SupportWebView_NavigationCompleted(
         object? sender, CoreWebView2NavigationCompletedEventArgs e)
     {
         if (e.IsSuccess)
         {
-            DiscussionsStatusPanel.Visibility = Visibility.Collapsed;
+            SupportStatusPanel.Visibility = Visibility.Collapsed;
             return;
         }
 
-        DiscussionsStatusText.Text =
-            $"GitHub Discussions could not finish loading ({e.WebErrorStatus}). Check your connection or open Discussions in your browser.";
-        DiscussionsOpenBrowserButton.Visibility = Visibility.Visible;
-    }
+        // A refused navigation is reported as cancelled; that is not a loading problem.
+        if (e.WebErrorStatus == CoreWebView2WebErrorStatus.OperationCanceled) return;
 
-    private void DiscussionsOpenBrowserButton_Click(object sender, RoutedEventArgs e)
-    {
-        try
-        {
-            Process.Start(new ProcessStartInfo(DiscussionsUrl) { UseShellExecute = true });
-        }
-        catch (Exception ex) when (ex is InvalidOperationException or Win32Exception)
-        {
-            MessageBox.Show(this, $"Could not open GitHub Discussions in your browser: {ex.Message}",
-                "GitHub Discussions", MessageBoxButton.OK, MessageBoxImage.Error);
-        }
+        SupportStatusText.Text =
+            $"The Ko-fi widget could not finish loading ({e.WebErrorStatus}). Check your connection or use the Ko-fi button.";
+        SupportStatusPanel.Visibility = Visibility.Visible;
     }
 
     private void InteractiveMap_NavigationCompleted(

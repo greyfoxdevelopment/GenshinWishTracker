@@ -1,14 +1,14 @@
 # Genshin Wish Tracker
-![GitHub Downloads (all assets, latest release)](https://img.shields.io/github/downloads/greyfoxdevelopment/GenshinWishTracker/latest/total)
+![GitHub Downloads (all assets, latest release)](https://img.shields.io/github/downloads/greyfoxdevelopment/GFDev-Genshin-Companion/latest/total)
 
 
 [Discord](https://discord.gg/WQknYbRKBt)    [Ko-fi](https://ko-fi.com/greyfoxdevelopment)
 
 ## Your wishes, pity, and daily progress at a glance
 
-Keep your Genshin Impact wish history close while you play. Genshin Wish Tracker is a free, community-made Windows companion with a live wish dashboard, pity counters, an interactive map, embedded character showcases, GitHub Discussions, and a resin and daily-commission view.
+Keep your Genshin Impact wish history close while you play. Genshin Wish Tracker is a free, community-made Windows companion with a live wish dashboard, pity counters, an interactive map, embedded character showcases, a changelog of recent updates, and a resin and daily-commission view.
 
-**Want to try it?** Download **`GenshinWishTrackerSetup.exe`** from the [latest GitHub Release](https://github.com/greyfoxdevelopment/GenshinWishTracker/releases/latest). Run the installer, accept the license, choose an install location, and it downloads and verifies the latest app for you. An internet connection is required during installation.
+**Want to try it?** Download **`GenshinWishTrackerSetup.exe`** from the [latest GitHub Release](https://github.com/greyfoxdevelopment/GFDev-Genshin-Companion/releases/latest). Run the installer, accept the license, choose an install location, and it downloads and verifies the latest app for you. An internet connection is required during installation.
 
 > The installer is published with tagged releases. If there is no installer asset on the latest release yet, check back after the next project release.
 
@@ -38,13 +38,15 @@ Keep your Genshin Impact wish history close while you play. Genshin Wish Tracker
 
 * **Keep useful tools together.** View real-time player data in your companion dashboard, tracking your current Resin, commissions, Realm Currency, and expedition progress.
 
-* **Join the community.** Browse the project's GitHub Discussions in the dashboard and open them in your browser if needed.
+* **Stay up to date.** The dashboard shows a changelog built from the project's recent commits, so you can see what changed in each update.
 
-* **Integrated layout features.** Open GitHub Discussions, HoYoLAB's interactive map, and public Enka.Network showcases inside the app. Resize or move the window to fit your play setup, or keep it pinned on top.
+* **Join the community and support the project.** Use the Discord and Ko-fi buttons in the title bar, and see what your support goes toward in the Support tab.
+
+* **Integrated layout features.** Open HoYoLAB's interactive map, and public Enka.Network showcases inside the app. Resize or move the window to fit your play setup, or keep it pinned on top.
 
 ## A privacy-conscious companion
 
-The app reads the game's local cache files; it does not interact with the game process. Wish history and settings are stored locally under `%LOCALAPPDATA%\GenshinWishTracker`. The wish link is held in memory during syncing and is not written to the history, settings, or logs. Network requests are made to the services needed for the feature you use, including HoYoverse, HoYoLAB, Enka.Network for public showcase pages, and GitHub for releases and updates.
+The app reads the game's local cache files; it does not interact with the game process. Wish history and settings are stored locally under `%LOCALAPPDATA%\GenshinWishTracker`. The wish link is held in memory during syncing and is not written to the history, settings, or logs. Network requests are made to the services needed for the feature you use, including HoYoverse, HoYoLAB, Enka.Network for public showcase pages, GitHub for releases, updates, and the changelog, and Ko-fi for the support widget (loaded only when you open the Support tab).
 
 This is an unofficial community project, not affiliated with or endorsed by HoYoverse. Genshin Impact is a trademark of HoYoverse (COGNOSPHERE).
 

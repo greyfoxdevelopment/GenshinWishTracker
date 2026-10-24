@@ -17,7 +17,7 @@ internal sealed record AvailableUpdate(Version Version, string Tag, Uri Download
 
 internal static class UpdateService
 {
-    private const string Repository = "greyfoxdevelopment/GenshinWishTracker";
+    private const string Repository = "greyfoxdevelopment/GFDev-Genshin-Companion";
     private const string LatestReleaseUrl = "https://api.github.com/repos/" + Repository + "/releases/latest";
     private const string ExecutableAssetName = "GenshinWishTracker.exe";
     private const string ChecksumAssetName = ExecutableAssetName + ".sha256";
