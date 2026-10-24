@@ -62,12 +62,12 @@ Interactive Map
   The map opens HoYoLAB's official Interactive Map in the app. Map features
   depend on HoYoLAB and its embedded sign-in session.
 
-Dashboard & Changelog
-  The Dashboard shows what's new: a list of the project's recent commits,
-  newest first, with the commit title, details, date, and author. Select an
-  entry to open that commit on GitHub. Use Refresh to reload the list, or View
-  all on GitHub for the full history. If the list cannot load (no connection,
-  or GitHub is limiting requests), try again later.
+Dashboard & What's New
+  The Dashboard lists the changes included in the current app release. Before
+  each release, update the CurrentReleaseNotes entries in
+  src\MainWindow.xaml.cs to describe that release's changes. The Game News tab
+  opens the official Genshin Impact news page in an embedded browser with Back,
+  Refresh, and Open in browser controls.
 
 Support
   The Support tab explains what support for the project goes toward and shows

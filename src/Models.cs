@@ -51,6 +51,12 @@ public sealed class AppSettings
     public string? GameFolder { get; set; }
 }
 
+public sealed class ReleaseNote
+{
+    public string Title { get; init; } = "";
+    public string Details { get; init; } = "";
+}
+
 // ---------------------------------------------------------------------------
 // Banner definitions + dashboard view-model
 // ---------------------------------------------------------------------------

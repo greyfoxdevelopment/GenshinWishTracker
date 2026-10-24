@@ -13,7 +13,7 @@
 
 ## Your wishes, pity, and daily progress at a glance
 
-Keep your Genshin Impact wish history close while you play. Genshin Companion is a free, community-made Windows app with a live wish dashboard, pity counters, an interactive map, embedded character showcases, a changelog of recent updates, and a resin and daily-commission view.
+Keep your Genshin Impact wish history close while you play. Genshin Companion is a free, community-made Windows app with a live wish dashboard, pity counters, official game news, an interactive map, embedded character showcases, and a resin and daily-commission view.
 
 **Want to try it?** Download **`GenshinCompanionSetup.exe`** from the [latest GitHub Release](https://github.com/greyfoxdevelopment/GFDev-Genshin-Companion/releases/latest). Run the installer, accept the license, choose an install location, and it downloads and verifies the latest app for you. An internet connection is required during installation.
 
@@ -45,7 +45,7 @@ Keep your Genshin Impact wish history close while you play. Genshin Companion is
 
 * **Keep useful tools together.** View real-time player data in your companion dashboard, tracking your current Resin, commissions, Realm Currency, and expedition progress.
 
-* **Stay up to date.** The dashboard shows a changelog built from the project's recent commits, so you can see what changed in each update.
+* **See what's new.** The dashboard lists the changes included in the latest app release.
 
 * **Join the community and support the project.** Use the Discord and Ko-fi buttons in the title bar, and see what your support goes toward in the Support tab.
 
@@ -53,7 +53,7 @@ Keep your Genshin Impact wish history close while you play. Genshin Companion is
 
 ## A privacy-conscious companion
 
-The app reads the game's local cache files; it does not interact with the game process. Wish history and settings are stored locally under `%LOCALAPPDATA%\GenshinWishTracker`. The wish link is held in memory during syncing and is not written to the history, settings, or logs. Network requests are made to the services needed for the feature you use, including HoYoverse, HoYoLAB, Enka.Network for public showcase pages, GitHub for releases, updates, and the changelog, and Ko-fi for the support widget (loaded only when you open the Support tab).
+The app reads the game's local cache files; it does not interact with the game process. Wish history and settings are stored locally under `%LOCALAPPDATA%\GenshinWishTracker`. The wish link is held in memory during syncing and is not written to the history, settings, or logs. Network requests are made to the services needed for the feature you use, including HoYoverse, HoYoLAB, Enka.Network for public showcase pages, GitHub for releases and updates, and Ko-fi for the support widget (loaded only when you open the Support tab).
 
 This is an unofficial community project, not affiliated with or endorsed by HoYoverse. Genshin Impact is a trademark of HoYoverse (COGNOSPHERE).
 

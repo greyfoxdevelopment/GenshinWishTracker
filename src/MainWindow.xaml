@@ -130,18 +130,13 @@
             </Setter>
         </Style>
 
-        <!-- One commit in the Dashboard changelog. Clicking opens the commit on GitHub. -->
-        <DataTemplate x:Key="ChangelogEntryTemplate" DataType="{x:Type local:ChangelogEntry}">
-            <Border Background="{StaticResource CardBrush}" CornerRadius="12" Margin="4,0,4,8" Padding="16,12"
-                    Cursor="Hand" Tag="{Binding Url}" ToolTip="Open this commit on GitHub"
-                    MouseLeftButtonUp="ChangelogEntry_Click">
+        <DataTemplate x:Key="ReleaseNoteTemplate" DataType="{x:Type local:ReleaseNote}">
+            <Border Background="{StaticResource CardBrush}" CornerRadius="12" Margin="4,0,4,8" Padding="16,12">
                 <StackPanel>
                     <TextBlock Text="{Binding Title}" Foreground="#E6E8F2" FontSize="14"
                                FontWeight="SemiBold" TextWrapping="Wrap"/>
-                    <TextBlock Text="{Binding Details}" Visibility="{Binding DetailsVisibility}"
-                               Foreground="#B8BCD0" FontSize="12" TextWrapping="Wrap" Margin="0,6,0,0"/>
-                    <TextBlock Text="{Binding MetaText}" Foreground="{StaticResource MutedBrush}"
-                               FontSize="11" Margin="0,8,0,0"/>
+                    <TextBlock Text="{Binding Details}" Foreground="#B8BCD0" FontSize="12"
+                               TextWrapping="Wrap" Margin="0,6,0,0"/>
                 </StackPanel>
             </Border>
         </DataTemplate>
@@ -271,29 +266,56 @@
                             <StackPanel Grid.Column="0" Margin="0,0,12,0">
                                 <TextBlock Text="What's New" FontSize="24" FontWeight="SemiBold"
                                            Foreground="#E6E8F2"/>
-                                <TextBlock x:Name="ChangelogSubtitle"
-                                           Text="Recent changes from the project's commit history."
+                                <TextBlock x:Name="ReleaseNotesSubtitle"
+                                           Text="Changes included in the latest release."
                                            Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap"
                                            Margin="0,4,0,0"/>
-                            </StackPanel>
-                            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                                <Button x:Name="ChangelogRefreshButton" Content="Refresh" Padding="14,7"
-                                        Margin="0,0,8,0" Click="ChangelogRefreshButton_Click"/>
-                                <Button Content="View all on GitHub" Padding="14,7"
-                                        Click="ChangelogOpenBrowserButton_Click"/>
                             </StackPanel>
                         </Grid>
 
                         <Grid Grid.Row="1">
                             <ScrollViewer VerticalScrollBarVisibility="Auto">
-                                <ItemsControl x:Name="ChangelogList"
-                                              ItemTemplate="{StaticResource ChangelogEntryTemplate}"/>
+                                <ItemsControl x:Name="ReleaseNotesList"
+                                              ItemTemplate="{StaticResource ReleaseNoteTemplate}"/>
                             </ScrollViewer>
-                            <Border x:Name="ChangelogStatusPanel" Background="#E612131C" Padding="18"
+                            <Border x:Name="ReleaseNotesStatusPanel" Background="#E612131C" Padding="18"
                                     HorizontalAlignment="Center" VerticalAlignment="Center"
                                     CornerRadius="10" MaxWidth="560">
-                                <TextBlock x:Name="ChangelogStatusText" Text="Loading recent changes…"
+                                <TextBlock Text="Release notes are not available."
                                            Foreground="#E6E8F2" TextWrapping="Wrap" TextAlignment="Center"/>
+                            </Border>
+                        </Grid>
+                    </Grid>
+                </TabItem>
+
+                <TabItem x:Name="NewsTab" Header="Game News">
+                    <Grid Margin="12">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <DockPanel Grid.Row="0" LastChildFill="False" Margin="4,0,4,10">
+                            <TextBlock DockPanel.Dock="Left" Text="Official Genshin Impact News"
+                                       FontSize="20" FontWeight="SemiBold" Foreground="#E6E8F2"
+                                       VerticalAlignment="Center"/>
+                            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                                <Button x:Name="NewsBackButton" Content="Back" Padding="12,6"
+                                        Margin="0,0,8,0" IsEnabled="False" Click="NewsBackButton_Click"/>
+                                <Button x:Name="NewsRefreshButton" Content="Refresh" Padding="12,6"
+                                        Margin="0,0,8,0" Click="NewsRefreshButton_Click"/>
+                                <Button Content="Open in browser" Padding="12,6"
+                                        Click="NewsOpenBrowserButton_Click"/>
+                            </StackPanel>
+                        </DockPanel>
+                        <Grid Grid.Row="1" Background="#12131C">
+                            <wv2:WebView2 x:Name="NewsWebView"/>
+                            <Border x:Name="NewsStatusPanel" Background="#E612131C" Padding="18"
+                                    HorizontalAlignment="Center" VerticalAlignment="Center"
+                                    CornerRadius="10" MaxWidth="560">
+                                <TextBlock x:Name="NewsStatusText"
+                                           Text="The official news page will load when you open this tab."
+                                           Foreground="#E6E8F2" TextWrapping="Wrap"
+                                           TextAlignment="Center"/>
                             </Border>
                         </Grid>
                     </Grid>
@@ -620,52 +642,39 @@
                             <StackPanel Margin="4,0,14,0">
                                 <TextBlock Text="Support Genshin Companion" FontSize="24"
                                            FontWeight="SemiBold" Foreground="#E6E8F2"/>
-                                <TextBlock Text="Genshin Companion is free to use. If it helps you, here is what your support goes toward:"
+                                <TextBlock Text="Genshin Companion is built from scratch in my spare time to give the community a clean, ad-free tool. Every cup of coffee or small donation directly buys me uninterrupted hours to write code, patch bugs, and implement your feature requests without relying on annoying ads or paywalls."
                                            Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap"
                                            Margin="0,4,0,16"/>
 
                                 <Border Background="{StaticResource CardBrush}" CornerRadius="12"
                                         Margin="0,0,0,10" Padding="18,16">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>
-                                        <TextBlock Grid.Column="0" Text="✦" Foreground="{StaticResource GoldBrush}"
-                                                   FontSize="18" Margin="0,0,14,0" VerticalAlignment="Center"/>
-                                        <TextBlock Grid.Column="1" Text="Pays me for my work (this stuff isn't easy)"
-                                                   Foreground="#E6E8F2" FontSize="15" TextWrapping="Wrap"
-                                                   VerticalAlignment="Center"/>
-                                    </Grid>
+                                    <StackPanel>
+                                        <TextBlock Text="Feature Development &amp; Maintenance"
+                                                   Foreground="#E6E8F2" FontSize="16" FontWeight="SemiBold"
+                                                   TextWrapping="Wrap" Margin="0,0,0,8"/>
+                                        <TextBlock Text="- Funds rapid bug fixes: Keeps me on top of sudden API changes or game patch updates so the app never stays broken.&#xA;&#xA;- Fuel for new features: Directly buys time for complex additions like advanced analytics, interactive maps, or customized planner tools.&#xA;&#xA;- Rigorous optimization: Allows me to spend dedicated hours making sure the app stays lightweight, lightning-fast, and easy on your system resources."
+                                                   Foreground="#B8BCD0" FontSize="12" TextWrapping="Wrap"/>
+                                    </StackPanel>
                                 </Border>
                                 <Border Background="{StaticResource CardBrush}" CornerRadius="12"
                                         Margin="0,0,0,10" Padding="18,16">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>
-                                        <TextBlock Grid.Column="0" Text="✦" Foreground="{StaticResource GoldBrush}"
-                                                   FontSize="18" Margin="0,0,14,0" VerticalAlignment="Center"/>
-                                        <TextBlock Grid.Column="1" Text="Helps cover the growth of the project"
-                                                   Foreground="#E6E8F2" FontSize="15" TextWrapping="Wrap"
-                                                   VerticalAlignment="Center"/>
-                                    </Grid>
+                                    <StackPanel>
+                                        <TextBlock Text="Project Integrity &amp; Independence"
+                                                   Foreground="#E6E8F2" FontSize="16" FontWeight="SemiBold"
+                                                   TextWrapping="Wrap" Margin="0,0,0,8"/>
+                                        <TextBlock Text="- Guarantees a 100% ad-free experience: Keeps the UI clean and beautiful without ever resorting to annoying pop-ups or clunky banners.&#xA;&#xA;- Protects user privacy: Ensures the app remains completely untracked, open-source, and free from any third-party data scraping.&#xA;&#xA;- Covers code signing and distribution: Helps fund developer certificates and secure delivery pipelines so your system installer stays safe, clean, and trusted."
+                                                   Foreground="#B8BCD0" FontSize="12" TextWrapping="Wrap"/>
+                                    </StackPanel>
                                 </Border>
                                 <Border Background="{StaticResource CardBrush}" CornerRadius="12"
                                         Margin="0,0,0,18" Padding="18,16">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>
-                                        <TextBlock Grid.Column="0" Text="✦" Foreground="{StaticResource GoldBrush}"
-                                                   FontSize="18" Margin="0,0,14,0" VerticalAlignment="Center"/>
-                                        <TextBlock Grid.Column="1"
-                                                   Text="Helps eventually hire staff and bring on more paid developers"
-                                                   Foreground="#E6E8F2" FontSize="15" TextWrapping="Wrap"
-                                                   VerticalAlignment="Center"/>
-                                    </Grid>
+                                    <StackPanel>
+                                        <TextBlock Text="Long-Term Vision &amp; Growth"
+                                                   Foreground="#E6E8F2" FontSize="16" FontWeight="SemiBold"
+                                                   TextWrapping="Wrap" Margin="0,0,0,8"/>
+                                        <TextBlock Text="- Scales infrastructure capacity: Keeps the underlying database and hosting systems stable as more and more travelers join the community.&#xA;&#xA;- Powers multi-game expansion: Lays the foundation to seamlessly bring these same clean tracking tools to sister games down the road.&#xA;&#xA;- Establishes a dedicated dev fund: Helps transition this passionate solo project into a fully supported, multi-developer open-source initiative."
+                                                   Foreground="#B8BCD0" FontSize="12" TextWrapping="Wrap"/>
+                                    </StackPanel>
                                 </Border>
 
                                 <Button Style="{StaticResource SyncButton}" HorizontalAlignment="Left"

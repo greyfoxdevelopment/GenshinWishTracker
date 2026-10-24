@@ -24,14 +24,14 @@ namespace GenshinWishTracker;
 public partial class MainWindow : Window
 {
     private const string InteractiveMapUrl = "https://act.hoyolab.com/ys/app/interactive-map/index.html";
+    private const string OfficialNewsUrl = "https://genshin.hoyoverse.com/en/news";
     private const string DiscordUrl = "https://discord.com/invite/WQknYbRKBt";
     private const string KofiUrl = "https://ko-fi.com/greyfoxdevelopment";
     private const string HoyolabHomeUrl = "https://www.hoyolab.com/home";
     private const int PageSize = 20;
     private const int DelayBetweenPagesMs = 350;
     private bool _mapInitializationStarted;
-    private bool _changelogLoaded;
-    private bool _changelogLoading;
+    private bool _newsInitializationStarted;
     private bool _supportInitializationStarted;
     private bool _buildWebViewInitializationStarted;
     private bool _hoyolabInitializationStarted;
@@ -62,6 +62,25 @@ public partial class MainWindow : Window
         new("standard",  "Standard Wanderlust", "Permanent · hard pity 90", "200", 90, 74, Color.FromRgb(0x8F, 0xE3, 0xA6)),
     };
 
+    private static readonly ReleaseNote[] CurrentReleaseNotes =
+    [
+        new()
+        {
+            Title = "Wish tracking now includes 4-star pulls",
+            Details = "See 4-star pull counts and your latest 4-star item for Character Event, Weapon Event, and Standard banners."
+        },
+        new()
+        {
+            Title = "Official Genshin Impact news",
+            Details = "Browse the official news page in its own tab, with Back, Refresh, and Open in browser controls."
+        },
+        new()
+        {
+            Title = "Genshin Companion rebrand and updater fixes",
+            Details = "Updated app and installer names, release assets, and update checks for the Genshin Companion release."
+        }
+    ];
+
     private static string BannerKeyOf(string gachaType) => gachaType switch
     {
         "301" or "400" => "character",
@@ -76,6 +95,9 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+        ReleaseNotesList.ItemsSource = CurrentReleaseNotes;
+        ReleaseNotesSubtitle.Text = $"Changes in version {CurrentVersionText()}";
+        ReleaseNotesStatusPanel.Visibility = Visibility.Collapsed;
     }
 
     private static HttpClient CreateHttpClient()
@@ -105,10 +127,7 @@ public partial class MainWindow : Window
         UpdatePlanner();
         BuildUidInput.Text = _store.LastUid ?? "";
         _resinCountdownTimer.Tick += (_, _) => RenderDailyNote();
-        // The changelog loads in the background so it never delays the update check.
-        Task changelogTask = LoadChangelogAsync();
         await CheckForUpdatesAsync();
-        await changelogTask;
     }
 
     private async void HoyolabSignInButton_Click(object sender, RoutedEventArgs e)
@@ -542,15 +561,14 @@ public partial class MainWindow : Window
     private async void MainTabs_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         if (!IsLoaded || !ReferenceEquals(e.Source, sender)) return;
-        if (MainTabs.SelectedItem == DashboardTab)
-        {
-            // Retry automatically if the first load failed (for example, no connection at startup).
-            if (!_changelogLoaded) await LoadChangelogAsync();
-            return;
-        }
         if (MainTabs.SelectedItem == SupportTab)
         {
             await InitializeSupportAsync();
+            return;
+        }
+        if (MainTabs.SelectedItem == NewsTab)
+        {
+            await InitializeNewsAsync();
             return;
         }
         if (MainTabs.SelectedItem != InteractiveMapTab) return;
@@ -581,91 +599,79 @@ public partial class MainWindow : Window
         }
     }
 
+    private async Task InitializeNewsAsync()
+    {
+        if (_newsInitializationStarted) return;
+        _newsInitializationStarted = true;
+        NewsStatusPanel.Visibility = Visibility.Visible;
+        NewsStatusText.Text = "Initializing the official news page…";
+
+        try
+        {
+            string profilePath = Path.Combine(AppDir, "WebView2-News");
+            Directory.CreateDirectory(profilePath);
+            NewsWebView.CreationProperties = new CoreWebView2CreationProperties
+            {
+                UserDataFolder = profilePath
+            };
+
+            await NewsWebView.EnsureCoreWebView2Async();
+            NewsWebView.CoreWebView2.NavigationCompleted += NewsWebView_NavigationCompleted;
+            NewsStatusText.Text = "Loading official Genshin Impact news…";
+            NewsWebView.CoreWebView2.Navigate(OfficialNewsUrl);
+        }
+        catch (Exception ex)
+        {
+            _newsInitializationStarted = false;
+            NewsStatusText.Text =
+                $"Could not initialize the embedded news page. Install the Microsoft Edge WebView2 Runtime or open it in your browser.\n\n{ex.Message}";
+        }
+    }
+
+    private void NewsWebView_NavigationCompleted(
+        object? sender, CoreWebView2NavigationCompletedEventArgs e)
+    {
+        NewsBackButton.IsEnabled = NewsWebView.CoreWebView2?.CanGoBack == true;
+        if (e.IsSuccess)
+        {
+            NewsStatusPanel.Visibility = Visibility.Collapsed;
+            return;
+        }
+
+        NewsStatusText.Text =
+            $"The official news page could not finish loading ({e.WebErrorStatus}). Check your connection or open it in your browser.";
+        NewsStatusPanel.Visibility = Visibility.Visible;
+    }
+
+    private void NewsBackButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (NewsWebView.CoreWebView2?.CanGoBack == true)
+            NewsWebView.CoreWebView2.GoBack();
+    }
+
+    private async void NewsRefreshButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (NewsWebView.CoreWebView2 is null)
+        {
+            await InitializeNewsAsync();
+            return;
+        }
+
+        NewsStatusText.Text = "Refreshing official Genshin Impact news…";
+        NewsStatusPanel.Visibility = Visibility.Visible;
+        NewsWebView.CoreWebView2.Reload();
+    }
+
+    private void NewsOpenBrowserButton_Click(object sender, RoutedEventArgs e) =>
+        OpenInBrowser(OfficialNewsUrl, "official Genshin Impact news");
+
     // ---------------------------------------------------------------------
-    // Dashboard changelog (recent commits from the project's GitHub repository)
+    // Dashboard release notes (update these when preparing a release)
     // ---------------------------------------------------------------------
     private static string CurrentVersionText()
     {
         Version? version = Assembly.GetExecutingAssembly().GetName().Version;
         return version == null ? "unknown" : $"{version.Major}.{version.Minor}.{Math.Max(version.Build, 0)}";
-    }
-
-    private void SetChangelogSubtitle(string text, bool isError = false)
-    {
-        ChangelogSubtitle.Text = text;
-        ChangelogSubtitle.Foreground = (Brush)FindResource(isError ? "ErrorBrush" : "MutedBrush");
-    }
-
-    private async Task LoadChangelogAsync()
-    {
-        if (_changelogLoading) return;
-        _changelogLoading = true;
-        ChangelogRefreshButton.IsEnabled = false;
-
-        bool hasEntries = ChangelogList.Items.Count > 0;
-        if (!hasEntries)
-        {
-            ChangelogStatusText.Text = "Loading recent changes…";
-            ChangelogStatusPanel.Visibility = Visibility.Visible;
-        }
-
-        try
-        {
-            IReadOnlyList<ChangelogEntry> entries = await ChangelogService.GetRecentChangesAsync();
-            ChangelogList.ItemsSource = entries;
-            _changelogLoaded = true;
-
-            if (entries.Count == 0)
-            {
-                ChangelogStatusText.Text = "No changes to show yet.";
-                ChangelogStatusPanel.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                ChangelogStatusPanel.Visibility = Visibility.Collapsed;
-            }
-
-            SetChangelogSubtitle(
-                $"You're on version {CurrentVersionText()} · recent changes from the project's commit history");
-        }
-        catch (ChangelogException ex)
-        {
-            ShowChangelogError(ex.Message, hasEntries);
-        }
-        catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException or JsonException)
-        {
-            ShowChangelogError($"Could not load the changelog: {ex.Message}", hasEntries);
-        }
-        finally
-        {
-            _changelogLoading = false;
-            ChangelogRefreshButton.IsEnabled = true;
-        }
-    }
-
-    private void ShowChangelogError(string message, bool keepExistingEntries)
-    {
-        // A failed refresh keeps the entries already on screen and reports the problem under the title.
-        if (keepExistingEntries)
-        {
-            SetChangelogSubtitle(message, isError: true);
-            return;
-        }
-
-        ChangelogStatusText.Text = message;
-        ChangelogStatusPanel.Visibility = Visibility.Visible;
-    }
-
-    private async void ChangelogRefreshButton_Click(object sender, RoutedEventArgs e) =>
-        await LoadChangelogAsync();
-
-    private void ChangelogOpenBrowserButton_Click(object sender, RoutedEventArgs e) =>
-        OpenInBrowser(ChangelogService.CommitsPageUrl, "the commit history");
-
-    private void ChangelogEntry_Click(object sender, MouseButtonEventArgs e)
-    {
-        if (sender is FrameworkElement { Tag: Uri commitUri })
-            OpenInBrowser(commitUri.AbsoluteUri, "this commit");
     }
 
     // ---------------------------------------------------------------------
