@@ -1,4 +1,4 @@
-# Genshin Wish Tracker
+# Genshin Companion
 ![GitHub Downloads (all assets, latest release)](https://img.shields.io/github/downloads/greyfoxdevelopment/GFDev-Genshin-Companion/latest/total)
 
 
@@ -6,9 +6,9 @@
 
 ## Your wishes, pity, and daily progress at a glance
 
-Keep your Genshin Impact wish history close while you play. Genshin Wish Tracker is a free, community-made Windows companion with a live wish dashboard, pity counters, an interactive map, embedded character showcases, a changelog of recent updates, and a resin and daily-commission view.
+Keep your Genshin Impact wish history close while you play. Genshin Companion is a free, community-made Windows app with a live wish dashboard, pity counters, an interactive map, embedded character showcases, a changelog of recent updates, and a resin and daily-commission view.
 
-**Want to try it?** Download **`GenshinWishTrackerSetup.exe`** from the [latest GitHub Release](https://github.com/greyfoxdevelopment/GFDev-Genshin-Companion/releases/latest). Run the installer, accept the license, choose an install location, and it downloads and verifies the latest app for you. An internet connection is required during installation.
+**Want to try it?** Download **`GenshinCompanionSetup.exe`** from the [latest GitHub Release](https://github.com/greyfoxdevelopment/GFDev-Genshin-Companion/releases/latest). Run the installer, accept the license, choose an install location, and it downloads and verifies the latest app for you. An internet connection is required during installation.
 
 > The installer is published with tagged releases. If there is no installer asset on the latest release yet, check back after the next project release.
 

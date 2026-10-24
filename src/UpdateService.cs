@@ -19,7 +19,7 @@ internal static class UpdateService
 {
     private const string Repository = "greyfoxdevelopment/GFDev-Genshin-Companion";
     private const string LatestReleaseUrl = "https://api.github.com/repos/" + Repository + "/releases/latest";
-    private const string ExecutableAssetName = "GenshinWishTracker.exe";
+    private const string ExecutableAssetName = "GenshinCompanion.exe";
     private const string ChecksumAssetName = ExecutableAssetName + ".sha256";
 
     // Release assets must live under THIS repository's release-download path on github.com.
@@ -30,7 +30,7 @@ internal static class UpdateService
     private static HttpClient CreateHttpClient()
     {
         var client = new HttpClient { Timeout = TimeSpan.FromSeconds(20) };
-        client.DefaultRequestHeaders.UserAgent.ParseAdd("GenshinWishTracker");
+        client.DefaultRequestHeaders.UserAgent.ParseAdd("GenshinCompanion");
         client.DefaultRequestHeaders.Accept.ParseAdd("application/vnd.github+json");
         return client;
     }
@@ -86,7 +86,7 @@ internal static class UpdateService
     /// <summary>Downloads the update, verifies its SHA-256 against the release's checksum file, and returns the temp path.</summary>
     internal static async Task<string> DownloadAsync(AvailableUpdate update)
     {
-        string downloadedPath = Path.Combine(Path.GetTempPath(), $"GenshinWishTracker-{Guid.NewGuid():N}.exe");
+        string downloadedPath = Path.Combine(Path.GetTempPath(), $"GenshinCompanion-{Guid.NewGuid():N}.exe");
         bool completed = false;
         using var timeout = new CancellationTokenSource(TimeSpan.FromMinutes(5));
         try
@@ -157,7 +157,7 @@ internal static class UpdateService
             "    Add-Type -AssemblyName System.Windows.Forms",
             "    [System.Windows.Forms.MessageBox]::Show(",
             "        \"Update failed: \" + $_.Exception.Message,",
-            "        \"Genshin Wish Tracker update\",",
+            "        \"Genshin Companion update\",",
             "        [System.Windows.Forms.MessageBoxButtons]::OK,",
             "        [System.Windows.Forms.MessageBoxIcon]::Error) | Out-Null",
             "} finally {",

@@ -19,7 +19,7 @@ internal sealed class SetupForm : Form
         Text = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
             "Programs",
-            "Genshin Wish Tracker")
+            "Genshin Companion")
     };
 
     private readonly CheckBox createShortcut = new()
@@ -80,7 +80,7 @@ internal sealed class SetupForm : Form
             AutoSize = true,
             Font = new Font(Font, FontStyle.Bold),
             Location = new Point(20, 18),
-            Text = "Genshin Wish Tracker"
+            Text = "Genshin Companion"
         };
         var licenseHeading = new Label
         {
@@ -115,7 +115,7 @@ internal sealed class SetupForm : Form
     {
         using var dialog = new FolderBrowserDialog
         {
-            Description = "Choose where to install Genshin Wish Tracker.",
+            Description = "Choose where to install Genshin Companion.",
             SelectedPath = installDirectory.Text,
             ShowNewFolderButton = true
         };
@@ -170,7 +170,7 @@ internal sealed class SetupForm : Form
                     Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
 
-            if (MessageBox.Show(this, "Genshin Wish Tracker was installed successfully. Launch it now?",
+            if (MessageBox.Show(this, "Genshin Companion was installed successfully. Launch it now?",
                     Text, MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
             {
                 try

@@ -11,7 +11,7 @@ assignees: greyfoxdevelopment
 A clear and concise description of what the bug is and what you expected to happen.
 
 ### Steps to Reproduce
-1. Open Genshin Wish Tracker.
+1. Open Genshin Companion.
 2. Click on '...'
 3. See error.
 

@@ -10,10 +10,10 @@ if errorlevel 1 (
   popd
   exit /b 1
 )
-move /Y WEB\GenshinWishTracker.exe GenshinWishTracker.exe >nul
+move /Y WEB\GenshinCompanion.exe GenshinCompanion.exe >nul
 if errorlevel 1 (
   echo.
-  echo BUILD FAILED. Could not place GenshinWishTracker.exe in the repository root.
+  echo BUILD FAILED. Could not place GenshinCompanion.exe in the repository root.
   popd
   exit /b 1
 )

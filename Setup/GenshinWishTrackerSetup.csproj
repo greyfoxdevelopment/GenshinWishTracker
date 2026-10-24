@@ -6,7 +6,9 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWindowsForms>true</UseWindowsForms>
-    <AssemblyName>GenshinWishTrackerSetup</AssemblyName>
+    <AssemblyName>GenshinCompanionSetup</AssemblyName>
+    <AssemblyTitle>Genshin Companion Setup</AssemblyTitle>
+    <Product>Genshin Companion</Product>
     <RootNamespace>GenshinWishTrackerSetup</RootNamespace>
     <ApplicationIcon>..\src\Resources\gwt.ico</ApplicationIcon>
     <EnableWindowsTargeting>true</EnableWindowsTargeting>

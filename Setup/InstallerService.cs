@@ -189,7 +189,7 @@ internal static class InstallerService
             dynamic shellObject = shell;
             string desktop = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
             dynamic shortcut = shellObject.CreateShortcut(
-                Path.Combine(desktop, "Genshin Wish Tracker.lnk"));
+                Path.Combine(desktop, "Genshin Companion.lnk"));
             shortcut.TargetPath = executablePath;
             shortcut.WorkingDirectory = Path.GetDirectoryName(executablePath);
             shortcut.IconLocation = executablePath + ",0";

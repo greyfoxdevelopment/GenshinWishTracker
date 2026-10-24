@@ -7,9 +7,10 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <AssemblyName>GenshinCompanion</AssemblyName>
+    <AssemblyTitle>Genshin Companion</AssemblyTitle>
     <RootNamespace>GenshinWishTracker</RootNamespace>
     <Version>1.1.1</Version>
-    <Product>Genshin Wish Tracker</Product>
+    <Product>Genshin Companion</Product>
     <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
     <ApplicationIcon>Resources\gwt.ico</ApplicationIcon>
   </PropertyGroup>

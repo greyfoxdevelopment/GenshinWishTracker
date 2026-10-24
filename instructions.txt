@@ -1,10 +1,10 @@
-GENSHIN WISH TRACKER - INSTRUCTIONS
+GENSHIN COMPANION - INSTRUCTIONS
 ==================================
 
 INSTALL THE APP
 ---------------
 
-1. Download GenshinWishTrackerSetup.exe from the project's latest GitHub Release:
+1. Download GenshinCompanionSetup.exe from the project's latest GitHub Release:
    https://github.com/greyfoxdevelopment/GFDev-Genshin-Companion/releases/latest
 2. Run the installer. An internet connection is required.
 3. Review and accept the included MIT License.
@@ -23,7 +23,7 @@ FIRST-TIME WISH SYNC
 1. Launch Genshin Impact.
 2. Open Paimon Menu > Wish > History in the game and wait for the history page
    to load. The game needs to write its wish link to its local web cache.
-3. Open Genshin Wish Tracker and select Sync Wishes.
+3. Open Genshin Companion and select Sync Wishes.
 4. If the game cache cannot be found, use the folder button in the app to select
    the Genshin Impact Game folder containing GenshinImpact_Data or YuanShen_Data.
 
@@ -152,7 +152,7 @@ Create a GitHub release
        git tag 1.0.3
        git push origin 1.0.3
   3. The Publish release GitHub Actions workflow builds the app and installer,
-     creates GenshinWishTracker.exe.sha256, and attaches all three files to the
+     creates GenshinCompanion.exe.sha256, and attaches all three files to the
      GitHub Release.
 
 The installer project is in Setup. It downloads the app executable and checksum

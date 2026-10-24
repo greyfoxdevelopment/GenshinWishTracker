@@ -68,7 +68,7 @@ internal sealed class WishLinkFallbackWindow : Window
         if (-not $wishUrl) { throw 'No working wish link found. Open Wish History in-game, wait for it to load, then run this again.' }
 
         Set-Clipboard -Value $wishUrl
-        Write-Host 'Wish-history link copied to clipboard. Return to Genshin Wish Tracker and click "Use clipboard link".' -ForegroundColor Green
+        Write-Host 'Wish-history link copied to clipboard. Return to Genshin Companion and click "Use clipboard link".' -ForegroundColor Green
         """;
 
     private readonly TextBox _commandBox;

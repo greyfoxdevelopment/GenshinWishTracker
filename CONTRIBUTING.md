@@ -1,4 +1,4 @@
-# Contributing to Genshin Wish Tracker 🚀
+# Contributing to Genshin Companion 🚀
 
 First off, thank you for taking the time to contribute! This is an unofficial, community-driven project, and open-source contributions are what keep tools like this lightweight, secure, and useful for everyone.
 

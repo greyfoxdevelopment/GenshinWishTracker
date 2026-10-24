@@ -51,7 +51,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           $tag = $env:GITHUB_REF_NAME
-          $files = @("release-output/GenshinCompanion.exe", "release-output/GenshinCompanion.exe.sha256", "setup-output/GenshinCompanion.exe")
+          $files = @("release-output/GenshinCompanion.exe", "release-output/GenshinCompanion.exe.sha256", "setup-output/GenshinCompanionSetup.exe")
           gh release view $tag *> $null
           if ($LASTEXITCODE -eq 0) {
             gh release upload $tag @files --clobber

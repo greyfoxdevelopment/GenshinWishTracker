@@ -686,7 +686,7 @@ public partial class MainWindow : Window
         catch (Exception ex) when (ex is InvalidOperationException or Win32Exception)
         {
             MessageBox.Show(this, $"Could not open {what} in your browser: {ex.Message}",
-                "Genshin Wish Tracker", MessageBoxButton.OK, MessageBoxImage.Error);
+                "Genshin Companion", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 
@@ -829,7 +829,7 @@ public partial class MainWindow : Window
             MessageBoxResult result = MessageBox.Show(
                 this,
                 $"Version {update.Tag} is available (you have {currentVersion}). Download and install it now?",
-                "Genshin Wish Tracker update",
+                "Genshin Companion update",
                 MessageBoxButton.YesNo,
                 MessageBoxImage.Information);
             if (result != MessageBoxResult.Yes) return;

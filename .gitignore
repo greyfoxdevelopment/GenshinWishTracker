@@ -12,6 +12,7 @@ settings.json
 release-output/
 /setup-output/
 .publish-staging/
+/GenshinCompanion.exe
 /GenshinWishTracker.exe
 /WEB/
 [Dd]ebug/
