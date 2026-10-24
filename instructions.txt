@@ -5,7 +5,7 @@ INSTALL THE APP
 ---------------
 
 1. Download GenshinWishTrackerSetup.exe from the project's latest GitHub Release:
-   https://github.com/greyfoxdevelopment/GenshinWishTracker/releases/latest
+   https://github.com/greyfoxdevelopment/GFDev-Genshin-Companion/releases/latest
 2. Run the installer. An internet connection is required.
 3. Review and accept the included MIT License.
 4. Choose an installation folder and whether to create a desktop shortcut.
@@ -13,9 +13,9 @@ INSTALL THE APP
    checksum before placing it in the selected folder.
 
 The installer is a self-contained Windows x64 program. It does not require the
-.NET runtime to be installed. Embedded web pages (Discussions, Interactive Map,
-and character showcases) require the Microsoft Edge WebView2 Runtime, which is
-already present on most Windows PCs.
+.NET runtime to be installed. Embedded web pages (Interactive Map, character
+showcases, and the Support tab widget) require the Microsoft Edge WebView2
+Runtime, which is already present on most Windows PCs.
 
 FIRST-TIME WISH SYNC
 --------------------
@@ -62,10 +62,21 @@ Interactive Map
   The map opens HoYoLAB's official Interactive Map in the app. Map features
   depend on HoYoLAB and its embedded sign-in session.
 
-Dashboard & Discussions
-  The Dashboard opens the project's GitHub Discussions. Browse public
-  discussions in the app; GitHub may ask you to sign in to participate. If
-  Discussions cannot load, use Open Discussions in browser.
+Dashboard & Changelog
+  The Dashboard shows what's new: a list of the project's recent commits,
+  newest first, with the commit title, details, date, and author. Select an
+  entry to open that commit on GitHub. Use Refresh to reload the list, or View
+  all on GitHub for the full history. If the list cannot load (no connection,
+  or GitHub is limiting requests), try again later.
+
+Support
+  The Support tab explains what support for the project goes toward and shows
+  the Ko-fi support widget. The widget loads only when you open the tab. If it
+  cannot load, use the Support on Ko-fi button.
+
+Discord and Ko-fi buttons
+  The Discord and Ko-fi buttons in the title bar open the project's Discord
+  invite and Ko-fi page in your default browser.
 
 Window
   Drag the title bar to move the window. Drag any border or corner to resize
@@ -81,6 +92,8 @@ Wish history and settings are stored on this PC:
 
 WebView2 stores the embedded browser profile under:
   %LOCALAPPDATA%\GenshinWishTracker\WebView2
+The Support tab's Ko-fi widget uses its own separate profile under:
+  %LOCALAPPDATA%\GenshinWishTracker\WebView2\Support
 
 The app reads the game's local cache to find the wish-history link. It does not
 interact with the game process. The wish link is held in memory during syncing

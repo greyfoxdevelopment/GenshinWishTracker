@@ -7,7 +7,7 @@ namespace GenshinWishTrackerSetup;
 
 internal static class InstallerService
 {
-    private const string Repository = "greyfoxdevelopment/GenshinWishTracker";
+    private const string Repository = "greyfoxdevelopment/GFDev-Genshin-Companion";
     private const string LatestReleaseUrl =
         "https://api.github.com/repos/" + Repository + "/releases/latest";
     private const string ExecutableName = "GenshinWishTracker.exe";
