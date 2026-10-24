@@ -14,7 +14,7 @@ reporting an issue if you can do so safely.
 ## Reporting a vulnerability
 
 Please report suspected vulnerabilities privately. Use
-[GitHub's private vulnerability reporting](https://github.com/greyfoxdevelopment/GenshinWishTracker/security/advisories/new)
+[GitHub's private vulnerability reporting](https://github.com/greyfoxdevelopment/GFDev-Genshin-Companion/security/advisories/new)
 if it is available for this repository. Do not open a public issue or pull
 request containing details that could put users at risk.
 
