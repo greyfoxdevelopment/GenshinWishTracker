@@ -6,9 +6,9 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
-    <AssemblyName>GenshinWishTracker</AssemblyName>
+    <AssemblyName>GenshinCompanion</AssemblyName>
     <RootNamespace>GenshinWishTracker</RootNamespace>
-    <Version>1.1.0</Version>
+    <Version>1.1.1</Version>
     <Product>Genshin Wish Tracker</Product>
     <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
     <ApplicationIcon>Resources\gwt.ico</ApplicationIcon>

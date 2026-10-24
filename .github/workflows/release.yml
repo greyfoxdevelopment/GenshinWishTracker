@@ -37,9 +37,9 @@ jobs:
       - name: Create SHA-256 checksum
         shell: pwsh
         run: |
-          $hash = (Get-FileHash release-output/GenshinWishTracker.exe -Algorithm SHA256).Hash.ToLowerInvariant()
-          "$hash  GenshinWishTracker.exe" | Set-Content -Path release-output/GenshinWishTracker.exe.sha256 -Encoding ascii
-          Get-Content release-output/GenshinWishTracker.exe.sha256
+          $hash = (Get-FileHash release-output/GenshinCompanion.exe -Algorithm SHA256).Hash.ToLowerInvariant()
+          "$hash  GenshinCompanion.exe" | Set-Content -Path release-output/GenshinCompanion.exe.sha256 -Encoding ascii
+          Get-Content release-output/GenshinCompanion.exe.sha256
 
       - name: Publish Windows installer
         run: dotnet publish Setup/GenshinWishTrackerSetup.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -o setup-output
@@ -51,7 +51,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           $tag = $env:GITHUB_REF_NAME
-          $files = @("release-output/GenshinWishTracker.exe", "release-output/GenshinWishTracker.exe.sha256", "setup-output/GenshinWishTrackerSetup.exe")
+          $files = @("release-output/GenshinCompanion.exe", "release-output/GenshinCompanion.exe.sha256", "setup-output/GenshinCompanion.exe")
           gh release view $tag *> $null
           if ($LASTEXITCODE -eq 0) {
             gh release upload $tag @files --clobber

@@ -67,7 +67,7 @@ internal sealed class SetupForm : Form
 
     public SetupForm()
     {
-        Text = "Genshin Wish Tracker Setup";
+        Text = "Genshin Companion Setup";
         Icon = Icon.ExtractAssociatedIcon(Environment.ProcessPath!);
         ClientSize = new Size(510, 545);
         MinimumSize = new Size(526, 584);

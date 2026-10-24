@@ -10,7 +10,7 @@ internal static class InstallerService
     private const string Repository = "greyfoxdevelopment/GFDev-Genshin-Companion";
     private const string LatestReleaseUrl =
         "https://api.github.com/repos/" + Repository + "/releases/latest";
-    private const string ExecutableName = "GenshinWishTracker.exe";
+    private const string ExecutableName = "GenshinCompanion.exe";
     private const string ChecksumName = ExecutableName + ".sha256";
     private const long MaximumDownloadSize = 1_073_741_824;
 
@@ -19,7 +19,7 @@ internal static class InstallerService
     private static HttpClient CreateHttpClient()
     {
         var client = new HttpClient { Timeout = Timeout.InfiniteTimeSpan };
-        client.DefaultRequestHeaders.UserAgent.ParseAdd("GenshinWishTrackerSetup");
+        client.DefaultRequestHeaders.UserAgent.ParseAdd("GenshinCompanion");
         client.DefaultRequestHeaders.Accept.Add(
             new MediaTypeWithQualityHeaderValue("application/vnd.github+json"));
         return client;
